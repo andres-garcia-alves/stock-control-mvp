@@ -1,0 +1,56 @@
+<br/>
+<h4>Baja de Stock</h4>
+
+<br/>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-dark">
+          <div class="gridCell floatLeft">
+            <input type="text" class="gridCell input-group-btn" [(ngModel)]="filtroProducto" (keyup)="filter()" placeholder="Producto" name="filtroProducto">
+          </div>
+          <div class="gridCell floatLeft">&nbsp;</div>
+          <div class="gridCell floatLeft textRight">Cantidad</div>
+        </li>
+      </ul>        
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-action"
+        *ngFor="let item of filteredStock" (click)="select(item)"
+        [class.active] = "item.productoId == seleccionado.productoId && item.localId == seleccionado.localId">
+          <span class="badge badge-primary floatLeft">{{ item.id }}</span>
+          <div class="gridCell floatLeft">{{ item.productoNombre }}</div>
+          <div class="gridCell floatLeft">&nbsp;</div>
+          <div class="gridCell floatLeft textRight">{{ item.cantidad }} unid.</div>
+        </li>
+      </ul>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="card-title">
+            Baja de productos...
+          </div>
+          <form [formGroup]="stockForm">
+            <div class="form-group">
+              <input type="number" class="form-control mt-3" formControlName="cantidad" placeholder="Cantidad">
+              <select id="motivo" class="form-control mt-3" formControlName="motivo" placeholder="Motivo">
+                <option Value="0">** Elegir Motivo **</option>
+                <option (ngValue)="1">Defectuoso</option>
+                <option (ngValue)="2">Devolución</option>
+                <option (ngValue)="3">Otro</option>
+              </select>
+            </div>
+          </form>
+          <button class="btn btn-secondary ml-3 mr-5" *ngIf="seleccionado.productoId !== 0" (click)="unselect()">Cancelar</button>
+          <button class="btn btn-danger ml-5" *ngIf="seleccionado.productoId !== 0" (click)="delete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <br/>
+  <div *ngIf="loading">loading...</div>
+  <div *ngIf="validaciones" style="white-space: pre;">{{ validaciones }}</div>
+</div>

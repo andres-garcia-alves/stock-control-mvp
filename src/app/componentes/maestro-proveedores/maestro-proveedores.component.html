@@ -1,0 +1,38 @@
+<br/>
+<h4>Maestro de Proveedores</h4>
+
+<br/>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-action"
+        *ngFor="let proveedor of proveedores" (click)="select(proveedor)"
+        [class.active] = "proveedor.id == seleccionado.id">
+          <span class="badge badge-primary">{{ proveedor.id }}</span>
+          {{ proveedor.nombre }}
+        </li>
+      </ul>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="card-title">
+            Editar...
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" [(ngModel)]="seleccionado.nombre" placeholder="Nombre" name="nombre">
+          </div>
+          <button class="btn btn-primary" (click)="addOrEdit()">{{ seleccionado.id === 0 ? 'Crear Nuevo' : 'Modificar' }}</button>
+          <button class="btn btn-secondary ml-3 mr-5" *ngIf="seleccionado.id !== 0" (click)="unselect()">Cancelar</button>
+          <button class="btn btn-danger ml-5" *ngIf="seleccionado.id !== 0" (click)="delete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br/>
+  <div *ngIf="loading">loading...</div>
+  <div *ngIf="validaciones" style="white-space: pre;">{{ validaciones }}</div>
+</div>

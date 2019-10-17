@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/" routerLink=""></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home" routerLinkActive='active'>Inicio</a>
+        </li>
+        <li class="nav-item dropdown" dropdown routerLinkActive='active'>
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Ventas
+          </a>
+          <ul *dropdownMenu class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/venta-resgistrar">Registrar Venta</a></li>
+            <li><a class="dropdown-item" routerLink="/venta-revertir">Revertir Venta</a></li>
+            <li><hr/></li>
+            <li><a class="dropdown-item" routerLink="/venta-reserva">Registrar Reserva</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown" dropdown routerLinkActive='active'>
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Stock
+          </a>
+          <ul *dropdownMenu class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/stock-actualizar">Actualizar Stock</a></li>
+            <li><a class="dropdown-item" routerLink="/stock-baja-defectuoso">Baja Defectuoso</a></li>
+            <li><hr/></li>
+            <li><a class="dropdown-item" routerLink="/stock-alerta-repo">Alerta Reposición</a></li>
+            <li><a class="dropdown-item" routerLink="/stock-transferir">Transferir entre Locales</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown" dropdown routerLinkActive='active'>
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Maestros
+          </a>
+          <ul *dropdownMenu class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/maestro-locales">Maestro de Locales</a></li>
+            <li><a class="dropdown-item" routerLink="/maestro-productos">Maestro de Productos</a></li>
+            <li><a class="dropdown-item" routerLink="/maestro-proveedores">Maestro de Proveedores</a></li>
+            <li><a class="dropdown-item" routerLink="/maestro-usuarios">Maestro de Usuarios</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown" dropdown routerLinkActive='active'>
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Reportes
+          </a>
+          <ul *dropdownMenu class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/reporte-productos-sin-venta">Productos Sin Venta</a></li>
+            <li><a class="dropdown-item" routerLink="/reporte-promociones">Promociones</a></li>
+            <li><a class="dropdown-item" routerLink="/reporte-vendedores-por-monto">Vendedores x Monto</a></li>
+            <li><a class="dropdown-item" routerLink="/reporte-vendedores-por-unid">Vendedores x Unidades</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown" dropdown routerLinkActive='active'>
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sistema
+          </a>
+          <ul *dropdownMenu class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/about">Acerca de</a></li>
+            <li><hr/></li>
+            <li><a class="dropdown-item" routerLink="/change-password">Cambiar Contraseña</a></li>
+            <li><a class="dropdown-item" (click)="exit()">Desloguearse</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>

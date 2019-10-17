@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+body {
+    background: #8e9eab;
+    background: -webkit-linear-gradient(to right, #eef2f3, #8e9eab);
+    background: linear-gradient(to right, #eef2f3, #8e9eab);
+    /* height: 100vh; */
+}
+
+/*.gridHeaderCell {
+    min-width: 200px;
+    background-color: gray;
+    float: left;
+}*/
+
+.gridCell {
+    min-width: 200px;
+    width: 30%;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.floatLeft {
+    float: left;
+    margin-right: 5px;
+}
+
+.clear {
+    clear: both;
+}
