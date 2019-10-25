@@ -17,6 +17,7 @@ export class MaestroLocalesComponent implements OnInit {
 
   locales: ILocal[] = [];
   seleccionado: ILocal = new Local();
+  seleccionadoBackup: ILocal = new Local();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -38,9 +39,12 @@ export class MaestroLocalesComponent implements OnInit {
 
   select(local: ILocal) {
     this.seleccionado = local;
+    this.seleccionadoBackup = new Local(local);
   }
 
   unselect() {
+    const index = this.locales.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.locales[index] = this.seleccionadoBackup;
     this.seleccionado = new Local();
   }
 
@@ -80,19 +84,19 @@ export class MaestroLocalesComponent implements OnInit {
 
   delete() {
 
-    if (confirm('Está seguro que desea borrarlo?')) {
-      this.loading = true;
-      const id = this.seleccionado.id;
+    if (confirm('Está seguro que desea borrarlo?') === false) { return; }
 
-      this.accesoDatosService.deleteLocal(id)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+    this.loading = true;
+    const id = this.seleccionado.id;
 
-      this.locales = this.locales.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Local();
-    }
+    this.accesoDatosService.deleteLocal(id)
+      .subscribe(response => {
+        console.log(response);
+        this.loading = false;
+      });
+
+    this.locales = this.locales.filter(x => x !== this.seleccionado);
+    this.seleccionado = new Local();
   }
 
   formValidations(): boolean {

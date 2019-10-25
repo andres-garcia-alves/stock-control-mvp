@@ -68,23 +68,21 @@ export class StockBajaComponent implements OnInit {
   delete() {
 
     if (this.formValidation() === false) { return; }
+    if (confirm('Está seguro que desea generar la baja?') === false ) { return; }
 
-    if (confirm('Está seguro que desea generar la baja?')) {
+    const bajaStock = new BajaStock();
+    bajaStock.id = this.seleccionado.id;
+    bajaStock.cantidad = this.stockForm.controls.cantidad.value;
+    bajaStock.motivo = this.stockForm.controls.motivo.value;
 
-      const bajaStock = new BajaStock();
-      bajaStock.id = this.seleccionado.id;
-      bajaStock.cantidad = this.stockForm.controls.cantidad.value;
-      bajaStock.motivo = this.stockForm.controls.motivo.value;
+    this.loading = true;
+    // console.log(bajaStock);
 
-      this.loading = true;
-      // console.log(bajaStock);
+    this.accesoDatosService.postBajaStock(bajaStock)
+      .subscribe(result => { this.loading = false; });
 
-      this.accesoDatosService.postBajaStock(bajaStock)
-        .subscribe(result => { this.loading = false; });
-
-      this.seleccionado.cantidad -= bajaStock.cantidad;
-      this.unselect();
-    }
+    this.seleccionado.cantidad -= bajaStock.cantidad;
+    this.unselect();
   }
 
   formValidation(): boolean {
@@ -101,11 +99,11 @@ export class StockBajaComponent implements OnInit {
     if (this.stockForm.controls.cantidad.value > this.seleccionado.cantidad) {
       this.validaciones += 'La cantidad a dar de baja excede el stock actual.\n';
     }
-    if (this.seleccionado.cantidad % 1 !== 0) {
+    if (this.stockForm.controls.cantidad.value % 1 !== 0) {
       this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
     }
 
-    console.log(this.stockForm.controls.motivo.value);
+    // console.log(this.stockForm.controls.motivo.value);
     if (this.stockForm.controls.motivo.value === '' || this.stockForm.controls.motivo.value === 0) {
       this.validaciones += 'Falta elegir el motivo de la baja.\n';
     }

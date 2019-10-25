@@ -17,6 +17,7 @@ export class MaestroUsuariosComponent implements OnInit {
 
   usuarios: IUsuario[];
   seleccionado: IUsuario = new Usuario();
+  seleccionadoBackup: IUsuario = new Usuario();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -41,9 +42,12 @@ export class MaestroUsuariosComponent implements OnInit {
 
   select(usuario: IUsuario) {
     this.seleccionado = usuario;
+    this.seleccionadoBackup = new Usuario(usuario);
   }
 
   unselect() {
+    const index = this.usuarios.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.usuarios[index] = this.seleccionadoBackup;
     this.seleccionado = new Usuario();
   }
 
@@ -81,19 +85,19 @@ export class MaestroUsuariosComponent implements OnInit {
 
   delete() {
 
-    if (confirm('Está seguro que desea borrarlo?')) {
-      this.loading = true;
-      const id = this.seleccionado.id;
+    if (confirm('Está seguro que desea borrarlo?') === false) { return; }
 
-      this.accesoDatosService.deleteUsuario(id)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+    this.loading = true;
+    const id = this.seleccionado.id;
 
-      this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Usuario();
-    }
+    this.accesoDatosService.deleteUsuario(id)
+      .subscribe(response => {
+        console.log(response);
+        this.loading = false;
+      });
+
+    this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
+    this.seleccionado = new Usuario();
   }
 
   formValidations(): boolean {

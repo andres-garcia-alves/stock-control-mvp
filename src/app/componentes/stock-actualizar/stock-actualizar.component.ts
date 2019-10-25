@@ -167,23 +167,23 @@ export class StockActualizarComponent implements OnInit {
 
     // console.log(this.stock);
     this.filter();
-    this.unselect(); // OLD: this.seleccionado = new Stock();
+    this.unselect();
   }
 
   delete() {
 
-    if (confirm('Está seguro que desea borrarlo?')) {
-      this.loading = true;
-      console.log('DELETE, Id:', this.seleccionado.id);
+    if (confirm('Está seguro que desea borrarlo?') === false) { return; }
 
-      this.accesoDatosService.deleteStock(this.seleccionado.id)
-        .subscribe(result => { this.loading = false; });
+    this.loading = true;
+    console.log('DELETE, Id:', this.seleccionado.id);
 
-      this.stock = this.stock.filter(x => x !== this.seleccionado);
+    this.accesoDatosService.deleteStock(this.seleccionado.id)
+      .subscribe(result => { this.loading = false; });
 
-      this.filter();
-      this.unselect(); // OLD: this.seleccionado = new Stock();
-    }
+    this.stock = this.stock.filter(x => x !== this.seleccionado);
+
+    this.filter();
+    this.unselect();
   }
 
   formValidation(): boolean {
@@ -198,6 +198,10 @@ export class StockActualizarComponent implements OnInit {
     }
     if (this.seleccionado.cantidad % 1 !== 0) {
       this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+    }
+
+    if (this.seleccionado.productoNombre === '') {
+      this.validaciones += 'Falta completar el nombre.\n';
     }
 
     return (this.validaciones === '') ? true : false;

@@ -17,6 +17,7 @@ export class MaestroProveedoresComponent implements OnInit {
 
   proveedores: IProveedor[] = [];
   seleccionado: IProveedor = new Proveedor();
+  seleccionadoBackup: IProveedor = new Proveedor();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -41,9 +42,12 @@ export class MaestroProveedoresComponent implements OnInit {
 
   select(proveedor: IProveedor) {
     this.seleccionado = proveedor;
+    this.seleccionadoBackup = new Proveedor(proveedor);
   }
 
   unselect() {
+    const index = this.proveedores.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.proveedores[index] = this.seleccionadoBackup;
     this.seleccionado = new Proveedor();
   }
 
@@ -81,19 +85,19 @@ export class MaestroProveedoresComponent implements OnInit {
 
   delete() {
 
-    if (confirm('Está seguro que desea borrarlo?')) {
-      this.loading = true;
-      const id = this.seleccionado.id;
+    if (confirm('Está seguro que desea borrarlo?') === false) { return; }
 
-      this.accesoDatosService.deleteProveedor(id)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+    this.loading = true;
+    const id = this.seleccionado.id;
 
-      this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Proveedor();
-    }
+    this.accesoDatosService.deleteProveedor(id)
+      .subscribe(response => {
+        console.log(response);
+        this.loading = false;
+      });
+
+    this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
+    this.seleccionado = new Proveedor();
   }
 
   formValidations(): boolean {

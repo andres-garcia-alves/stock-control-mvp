@@ -17,6 +17,7 @@ export class MaestroProductosComponent implements OnInit {
 
   productos: IProducto[] = [];
   seleccionado: IProducto = new Producto();
+  seleccionadoBackup: IProducto = new Producto();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -41,9 +42,12 @@ export class MaestroProductosComponent implements OnInit {
 
   select(producto: IProducto) {
     this.seleccionado = producto;
+    this.seleccionadoBackup = new Producto(producto);
   }
 
   unselect() {
+    const index = this.productos.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.productos[index] = this.seleccionadoBackup;
     this.seleccionado = new Producto();
   }
 
@@ -81,19 +85,19 @@ export class MaestroProductosComponent implements OnInit {
 
   delete() {
 
-    if (confirm('Está seguro que desea borrarlo?')) {
-      this.loading = true;
-      const id = this.seleccionado.id;
+    if (confirm('Está seguro que desea borrarlo?') === false) { return; }
 
-      this.accesoDatosService.deleteProducto(id)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+    this.loading = true;
+    const id = this.seleccionado.id;
 
-      this.productos = this.productos.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Producto();
-    }
+    this.accesoDatosService.deleteProducto(id)
+      .subscribe(response => {
+        console.log(response);
+        this.loading = false;
+      });
+
+    this.productos = this.productos.filter(x => x !== this.seleccionado);
+    this.seleccionado = new Producto();
   }
 
   formValidations(): boolean {
