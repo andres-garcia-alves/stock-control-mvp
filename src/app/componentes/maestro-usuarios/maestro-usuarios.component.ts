@@ -22,11 +22,12 @@ export class MaestroUsuariosComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.accesoDatosService.getUsuarios()
-      .subscribe(result => {
+
+    /*this.accesoDatosService.getUsuarios()
+      .subscribe(response => {
         // this.usuarios = result; // TODO: update desde back-end
         this.loading = false;
-    });
+    });*/
 
     this.usuarios = [ // TODO: comentar
       { id: 1, nombre: 'Bonomini, Guido' },
@@ -58,21 +59,23 @@ export class MaestroUsuariosComponent implements OnInit {
       this.usuarios.push(this.seleccionado);
 
       this.accesoDatosService.postUsuario(this.seleccionado)
-        .subscribe(result => {
-          // aux.id = result; // TODO: update desde back-end
+        .subscribe(response => {
+          // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
       });
-      // console.log(this.usuarios);
 
     } else { // update
 
       console.log('update');
       this.accesoDatosService.putUsuario(this.seleccionado)
-        .subscribe(result => { this.loading = false; });
-        // console.log(this.usuarios);
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
     }
 
+    // console.log(this.usuarios);
     this.seleccionado = new Usuario();
   }
 
@@ -83,7 +86,10 @@ export class MaestroUsuariosComponent implements OnInit {
       const id = this.seleccionado.id;
 
       this.accesoDatosService.deleteUsuario(id)
-        .subscribe(result => { this.loading = false; });
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
 
       this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
       this.seleccionado = new Usuario();

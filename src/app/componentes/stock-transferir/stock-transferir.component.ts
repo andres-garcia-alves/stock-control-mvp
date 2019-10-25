@@ -139,6 +139,10 @@ export class StockTransferirComponent implements OnInit {
     if (this.stockForm.controls.cantidad.value > this.seleccionado.cantidad) {
       this.validaciones += 'La cantidad a transferir excede el stock en origen.\n';
     }
+    if (this.seleccionado.cantidad % 1 !== 0) {
+      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+    }
+
     if (this.stockForm.controls.destino.value === '' || this.stockForm.controls.destino.value === 0) {
       this.validaciones += 'Falta elegir el local destino.\n';
     }

@@ -94,12 +94,17 @@ export class StockBajaComponent implements OnInit {
     if (this.seleccionado.id === 0) {
       this.validaciones += 'Falta elegir el producto a modificar.\n';
     }
+
     if (this.stockForm.controls.cantidad.value <= 0) {
       this.validaciones += 'Falta completar la cantidad.\n';
     }
     if (this.stockForm.controls.cantidad.value > this.seleccionado.cantidad) {
       this.validaciones += 'La cantidad a dar de baja excede el stock actual.\n';
     }
+    if (this.seleccionado.cantidad % 1 !== 0) {
+      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+    }
+
     console.log(this.stockForm.controls.motivo.value);
     if (this.stockForm.controls.motivo.value === '' || this.stockForm.controls.motivo.value === 0) {
       this.validaciones += 'Falta elegir el motivo de la baja.\n';

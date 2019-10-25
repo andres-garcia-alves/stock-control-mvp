@@ -196,6 +196,9 @@ export class StockActualizarComponent implements OnInit {
     if (this.seleccionado.cantidad > 9999) {
       this.validaciones += 'Cantidad inválida. Máximo $9999.\n';
     }
+    if (this.seleccionado.cantidad % 1 !== 0) {
+      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+    }
 
     return (this.validaciones === '') ? true : false;
   }

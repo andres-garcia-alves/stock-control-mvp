@@ -15,28 +15,28 @@ export class MaestroProductosComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  productos: IProducto[];
+  productos: IProducto[] = [];
   seleccionado: IProducto = new Producto();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
   ngOnInit() {
-
     this.loading = true;
+
     this.accesoDatosService.getProductos()
-      .subscribe(result => {
-        // this.productos = result; // TODO: update desde back-end
+      .subscribe(response => {
         this.loading = false;
+        this.productos = response;
     });
 
-    this.productos = [ // TODO: comentar
+    /*this.productos = [ // TODO: comentar
       { id: 1, nombre: 'Jeans Dama', precio: 3500 },
       { id: 2, nombre: 'Jeans Caballero', precio: 3600 },
       { id: 3, nombre: 'Camisa Dama', precio: 1700 },
       { id: 4, nombre: 'Camisa Caballero', precio: 1800 },
       { id: 5, nombre: 'Remera Dama', precio: 1000 },
       { id: 6, nombre: 'Remera Caballero', precio: 1200 }
-    ];
+    ];*/
   }
 
   select(producto: IProducto) {
@@ -59,21 +59,23 @@ export class MaestroProductosComponent implements OnInit {
       this.productos.push(this.seleccionado);
 
       this.accesoDatosService.postProducto(this.seleccionado)
-        .subscribe(result => {
-          // aux.id = result; // // TODO: update desde back-end
+        .subscribe(response => {
+          // aux.id = response; // // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.productos.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
       });
-      // console.log(this.productos);
 
     } else { // update
 
       console.log('update');
       this.accesoDatosService.putProducto(this.seleccionado)
-        .subscribe(result => { this.loading = false; });
-        // console.log(this.productos);
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
     }
 
+    // console.log(this.productos);
     this.seleccionado = new Producto();
   }
 
@@ -84,7 +86,10 @@ export class MaestroProductosComponent implements OnInit {
       const id = this.seleccionado.id;
 
       this.accesoDatosService.deleteProducto(id)
-        .subscribe(result => { this.loading = false; });
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
 
       this.productos = this.productos.filter(x => x !== this.seleccionado);
       this.seleccionado = new Producto();

@@ -15,24 +15,25 @@ export class MaestroLocalesComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  locales: ILocal[];
+  locales: ILocal[] = [];
   seleccionado: ILocal = new Local();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
   ngOnInit() {
     this.loading = true;
+
     this.accesoDatosService.getLocales()
-      .subscribe(result => {
-        // this.locales = result; // TODO: update desde back-end
+      .subscribe(response => {
         this.loading = false;
+        this.locales = response;
     });
 
-    this.locales = [ // TODO: comentar
+    /*this.locales = [
       { id: 1, nombre: 'Local CABA' },
       { id: 2, nombre: 'Local Bs As' },
       { id: 3, nombre: 'Local Rosario' }
-    ];
+    ];*/
   }
 
   select(local: ILocal) {
@@ -55,21 +56,25 @@ export class MaestroLocalesComponent implements OnInit {
       this.locales.push(this.seleccionado);
 
       this.accesoDatosService.postLocal(this.seleccionado)
-        .subscribe(result => {
-          // aux.id = result; // TODO: update desde back-end
+        .subscribe(response => {
+          console.log(response);
+          // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.locales.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
       });
-      // console.log(this.locales);
 
     } else { // update
 
       console.log('update');
+      // console.log(this.seleccionado);
       this.accesoDatosService.putLocal(this.seleccionado)
-        .subscribe(result => { this.loading = false; });
-      // console.log(this.locales);
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
     }
 
+    // console.log(this.locales);
     this.seleccionado = new Local();
   }
 
@@ -80,7 +85,10 @@ export class MaestroLocalesComponent implements OnInit {
       const id = this.seleccionado.id;
 
       this.accesoDatosService.deleteLocal(id)
-        .subscribe(result => { this.loading = false; });
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
 
       this.locales = this.locales.filter(x => x !== this.seleccionado);
       this.seleccionado = new Local();

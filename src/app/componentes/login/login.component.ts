@@ -25,28 +25,28 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   onSubmit() {
+    this.mensaje = null;
 
     this.login = {
       usuario: this.registroForm.value.usuario,
       password: this.registroForm.value.contraseña
     };
 
-    this.accesoDatosService.postLogin(this.login)
+    // TODO: comentar esta sección
+    if (this.login.usuario.toLowerCase() === 'admin' && this.login.password.toLowerCase() === '1234') {
+      sessionStorage.setItem('user', this.login.usuario);
+      sessionStorage.setItem('token', 'aqui-va-a-ir-el-token-de-autorizacion');
+      this.router.navigate(['/home']);
+    } else {
+      this.mensaje = 'Usuario y/o contraseña incorrectos.';
+    }
+
+    /*this.accesoDatosService.postLogin(this.login)
       .subscribe(result => {
-        // console.log(result);
-
-        // TODO: update token desde backend
-        // if (result !== '' && result !== null) {
-        if (this.login.usuario.toLowerCase() === 'admin' && this.login.password.toLowerCase() === '1234') {
-          this.mensaje = null;
-          sessionStorage.setItem('user', this.login.usuario);
-          // sessionStorage.setItem('token', result); // TODO: descomentar
-          sessionStorage.setItem('token', 'aqui-va-a-ir-el-token-de-autorizacion'); // TODO: comentar
-          this.router.navigate(['/home']);
-
-        } else {
-          this.mensaje = 'Usuario y/o contraseña incorrectos.';
+        console.log(result);
+        if (result !== '' && result !== null) {
+        sessionStorage.setItem('token', result); // TODO: descomentar
         }
-    });
+    });*/
   }
 }

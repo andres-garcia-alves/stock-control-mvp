@@ -15,27 +15,28 @@ export class MaestroProveedoresComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  proveedores: IProveedor[];
+  proveedores: IProveedor[] = [];
   seleccionado: IProveedor = new Proveedor();
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
   ngOnInit() {
     this.loading = true;
+
     this.accesoDatosService.getProveedores()
-      .subscribe(result => {
-        // this.proveedores = result; // TODO: update desde back-end
+      .subscribe(response => {
+        this.proveedores = response;
         this.loading = false;
     });
 
-    this.proveedores = [ // TODO: comentar
+    /* this.proveedores = [
       { id: 1, nombre: 'Levis' },
       { id: 2, nombre: 'Wrangler' },
       { id: 3, nombre: '42 Street' },
       { id: 4, nombre: 'Chocolate' },
       { id: 5, nombre: 'Akiabara' },
       { id: 6, nombre: 'Solido' }
-    ];
+    ];*/
   }
 
   select(proveedor: IProveedor) {
@@ -58,21 +59,23 @@ export class MaestroProveedoresComponent implements OnInit {
       this.proveedores.push(this.seleccionado);
 
       this.accesoDatosService.postProveedor(this.seleccionado)
-        .subscribe(result => {
-          // aux.id = result; // // TODO: update desde back-end
+        .subscribe(response => {
+          // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
       });
-      // console.log(this.proveedores);
 
     } else { // update
 
       console.log('update');
       this.accesoDatosService.putProveedor(this.seleccionado)
-        .subscribe(result => { this.loading = false; });
-      // console.log(this.proveedores);
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
     }
 
+    // console.log(this.proveedores);
     this.seleccionado = new Proveedor();
   }
 
@@ -83,7 +86,10 @@ export class MaestroProveedoresComponent implements OnInit {
       const id = this.seleccionado.id;
 
       this.accesoDatosService.deleteProveedor(id)
-        .subscribe(result => { this.loading = false; });
+        .subscribe(response => {
+          console.log(response);
+          this.loading = false;
+        });
 
       this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
       this.seleccionado = new Proveedor();

@@ -12,11 +12,12 @@ import { IStock, IBajaStock, ITransferirStock } from '../interfaces/index';
 export class AccesoDatosService {
 
   // TODO: update con URL del back-end real
-  urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo
   // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/r2d2/'; // fake db
+  // urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo server
+  urlBase = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
 
   apiLogin = this.urlBase + 'login/';
-  apiLocales = this.urlBase + 'locales/';
+  apiLocales = this.urlBase + 'tiendas/'; // 'locales/';
   apiProductos = this.urlBase + 'productos/';
   apiProveedores = this.urlBase + 'proveedores/';
   apiUsuarios = this.urlBase + 'usuarios/';
@@ -52,7 +53,7 @@ export class AccesoDatosService {
   }
 
   putLocal(local: ILocal) {
-    return this.http.put<ILocal>(this.apiLocales, local, this.httpOptions())
+    return this.http.put<ILocal>(this.apiLocales + local.id, local, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -76,7 +77,7 @@ export class AccesoDatosService {
   }
 
   putProducto(producto: IProducto) {
-    return this.http.put<IProducto>(this.apiProductos, producto, this.httpOptions())
+    return this.http.put<IProducto>(this.apiProductos + producto.id, producto, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -100,7 +101,7 @@ export class AccesoDatosService {
   }
 
   putProveedor(proveedor: IProveedor) {
-    return this.http.put<IProveedor>(this.apiProveedores, proveedor, this.httpOptions())
+    return this.http.put<IProveedor>(this.apiProveedores + proveedor.id, proveedor, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -124,7 +125,7 @@ export class AccesoDatosService {
   }
 
   putUsuario(usuario: IUsuario) {
-    return this.http.put<IUsuario>(this.apiUsuarios, usuario, this.httpOptions())
+    return this.http.put<IUsuario>(this.apiUsuarios + usuario.id, usuario, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -144,7 +145,7 @@ export class AccesoDatosService {
   }
 
   putStock(stock: IStock) {
-    return this.http.put<IStock>(this.apiStock, stock, this.httpOptions())
+    return this.http.put<IStock>(this.apiStock + stock.id, stock, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -166,17 +167,29 @@ export class AccesoDatosService {
   }
 
 
-  httpOptions() {
+  httpOptions(observeResponse: boolean = false) {
     const token = (sessionStorage.getItem('token') != null) ? sessionStorage.getItem('token') : '';
 
-    return {
-      headers : new HttpHeaders({
-        'Content-Type': 'application/json',
-        // tslint:disable-next-line:object-literal-key-quotes
-        'Authorization': token
-      }),
-      observe : 'response' as 'body'
-    };
+    if (observeResponse === false) {
+      return {
+        headers : new HttpHeaders({
+          'Content-Type': 'application/json',
+          // tslint:disable-next-line:object-literal-key-quotes
+          'Authorization': token
+        })
+      };
+    }
+
+    if (observeResponse === true) {
+      return {
+        headers : new HttpHeaders({
+          'Content-Type': 'application/json',
+          // tslint:disable-next-line:object-literal-key-quotes
+          'Authorization': token
+        }),
+        observe : 'response' as 'body'
+      };
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
