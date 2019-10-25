@@ -50,7 +50,8 @@
                   {{ local.nombre }}
                 </option>
               </select>
-              <input type="number" formControlName="cantidad" ([value])="seleccionado.cantidad" class="form-control mt-3" placeholder="Cantidad">
+              <input id="inputCantidad" type="number" class="form-control mt-3" formControlName="inputCantidad" placeholder="Cantidad"
+              (value)="seleccionado.cantidad" (change)="inputCantidadOnChange()">
             </div>
           </form>
           <button class="btn btn-primary" (click)="addOrEdit()">{{ seleccionado.productoId === 0 ? 'Crear Nuevo' : 'Modificar' }}</button>

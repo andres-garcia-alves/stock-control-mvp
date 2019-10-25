@@ -60,10 +60,10 @@ export class MaestroProveedoresComponent implements OnInit {
 
       console.log('new');
       const aux: IProveedor = this.seleccionado;
-      this.proveedores.push(this.seleccionado);
 
       this.accesoDatosService.postProveedor(this.seleccionado)
         .subscribe(response => {
+          this.proveedores.push(this.seleccionado);
           // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;

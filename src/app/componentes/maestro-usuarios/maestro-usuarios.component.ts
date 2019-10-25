@@ -60,10 +60,10 @@ export class MaestroUsuariosComponent implements OnInit {
 
       console.log('new');
       const aux: IUsuario = this.seleccionado;
-      this.usuarios.push(this.seleccionado);
 
       this.accesoDatosService.postUsuario(this.seleccionado)
         .subscribe(response => {
+          this.usuarios.push(this.seleccionado);
           // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;

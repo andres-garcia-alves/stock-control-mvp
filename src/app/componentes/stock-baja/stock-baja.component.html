@@ -34,13 +34,13 @@
           </div>
           <form [formGroup]="stockForm">
             <div class="form-group">
-              <input type="number" class="form-control mt-3" formControlName="cantidad" placeholder="Cantidad">
               <select id="motivo" class="form-control mt-3" formControlName="motivo" placeholder="Motivo">
                 <option Value="0">** Elegir Motivo **</option>
                 <option (ngValue)="1">Defectuoso</option>
                 <option (ngValue)="2">Devolución</option>
                 <option (ngValue)="3">Otro</option>
               </select>
+              <input type="number" class="form-control mt-3" formControlName="cantidad" placeholder="Cantidad">
             </div>
           </form>
           <button class="btn btn-secondary ml-3 mr-5" *ngIf="seleccionado.productoId !== 0" (click)="unselect()">Cancelar</button>

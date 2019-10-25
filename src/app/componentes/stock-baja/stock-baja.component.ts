@@ -15,7 +15,7 @@ export class StockBajaComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  stock: IStock[];
+  stock: IStock[] = [];
 
   seleccionado: IStock = new Stock();
   stockForm: FormGroup;
@@ -29,8 +29,8 @@ export class StockBajaComponent implements OnInit {
     this.loading = true;
 
     this.stockForm = new FormGroup({
-      cantidad: new FormControl(''),
-      motivo: new FormControl('')
+      motivo: new FormControl(''),
+      cantidad: new FormControl('')
     });
 
     this.accesoDatosService.getStock()
@@ -51,14 +51,14 @@ export class StockBajaComponent implements OnInit {
 
   select(stock: IStock) {
     this.seleccionado = stock;
-    // console.log(this.seleccionado);
   }
 
   unselect() {
     this.seleccionado = new Stock();
-    this.stockForm.controls.cantidad.setValue('');
-    this.stockForm.controls.motivo.setValue(0);
     this.validaciones = '';
+
+    this.stockForm.controls.motivo.setValue(0);
+    this.stockForm.controls.cantidad.setValue('');
   }
 
   filter() {
@@ -72,11 +72,10 @@ export class StockBajaComponent implements OnInit {
 
     const bajaStock = new BajaStock();
     bajaStock.id = this.seleccionado.id;
-    bajaStock.cantidad = this.stockForm.controls.cantidad.value;
     bajaStock.motivo = this.stockForm.controls.motivo.value;
+    bajaStock.cantidad = this.stockForm.controls.cantidad.value;
 
     this.loading = true;
-    // console.log(bajaStock);
 
     this.accesoDatosService.postBajaStock(bajaStock)
       .subscribe(result => { this.loading = false; });
@@ -93,6 +92,10 @@ export class StockBajaComponent implements OnInit {
       this.validaciones += 'Falta elegir el producto a modificar.\n';
     }
 
+    if (this.stockForm.controls.motivo.value === '' || this.stockForm.controls.motivo.value === 0) {
+      this.validaciones += 'Falta elegir el motivo de la baja.\n';
+    }
+
     if (this.stockForm.controls.cantidad.value <= 0) {
       this.validaciones += 'Falta completar la cantidad.\n';
     }
@@ -101,11 +104,6 @@ export class StockBajaComponent implements OnInit {
     }
     if (this.stockForm.controls.cantidad.value % 1 !== 0) {
       this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
-    }
-
-    // console.log(this.stockForm.controls.motivo.value);
-    if (this.stockForm.controls.motivo.value === '' || this.stockForm.controls.motivo.value === 0) {
-      this.validaciones += 'Falta elegir el motivo de la baja.\n';
     }
 
     return (this.validaciones === '') ? true : false;

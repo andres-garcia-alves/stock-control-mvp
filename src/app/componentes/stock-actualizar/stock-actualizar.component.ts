@@ -15,16 +15,17 @@ export class StockActualizarComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  stock: IStock[];
-  locales: ILocal[];
-  productos: IProducto[];
+  stock: IStock[] = [];
+  locales: ILocal[] = [];
+  productos: IProducto[] = [];
+
+  seleccionado: IStock = new Stock();
+  seleccionadoBackup: IStock = new Stock();
+  stockForm: FormGroup;
 
   filtroProducto = '';
   filtroLocal = 'CABA';
   filteredStock: IStock[];
-
-  seleccionado: IStock = new Stock();
-  stockForm: FormGroup;
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -35,7 +36,7 @@ export class StockActualizarComponent implements OnInit {
     this.stockForm = new FormGroup({
       selectProductos: new FormControl(''),
       selectLocales: new FormControl(''),
-      cantidad: new FormControl('')
+      inputCantidad: new FormControl('')
     });
 
     this.accesoDatosService.getStock()
@@ -88,31 +89,34 @@ export class StockActualizarComponent implements OnInit {
 
   select(stock: IStock) {
     this.seleccionado = stock;
+    this.seleccionadoBackup = new Stock(stock);
 
     this.stockForm.controls.selectProductos.disable();
     this.stockForm.controls.selectLocales.disable();
-    this.stockForm.controls.cantidad.setValue(stock.cantidad);
+    this.stockForm.controls.inputCantidad.setValue(stock.cantidad);
   }
 
   unselect() {
+    const index = this.stock.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.stock[index] = this.seleccionadoBackup;
+    this.filter();
+
     this.seleccionado = new Stock();
+    this.validaciones = '';
 
     this.stockForm.controls.selectProductos.setValue('');
-    this.stockForm.controls.selectLocales.setValue('');
-    this.stockForm.controls.cantidad.setValue('');
-
     this.stockForm.controls.selectProductos.enable();
+    this.stockForm.controls.selectLocales.setValue('');
     this.stockForm.controls.selectLocales.enable();
+    this.stockForm.controls.inputCantidad.setValue('');
   }
 
   filter() {
     this.filteredStock = this.stock.filter(
-      x => x.productoNombre.includes(this.filtroProducto) &&
-      x.localNombre.includes(this.filtroLocal));
+      x => x.productoNombre.includes(this.filtroProducto) && x.localNombre.includes(this.filtroLocal));
   }
 
   selectProductosOnChange(event: Event) {
-
     // tslint:disable-next-line:no-string-literal
     const selectedOptions = event.target['options'];
     const selectedIndex = selectedOptions.selectedIndex;
@@ -124,10 +128,8 @@ export class StockActualizarComponent implements OnInit {
   }
 
   selectLocalesOnChange(event: Event) {
-
     // tslint:disable-next-line:no-string-literal
     const selectedOptions = event.target['options'];
-    console.log(selectedOptions);
     const selectedIndex = selectedOptions.selectedIndex;
     const selectElementText = selectedOptions[selectedIndex].text;
     const selectElementValue = selectedOptions[selectedIndex].value;
@@ -136,22 +138,24 @@ export class StockActualizarComponent implements OnInit {
     this.seleccionado.localNombre = selectElementText;
   }
 
+  inputCantidadOnChange() {
+    this.seleccionado.cantidad = this.stockForm.controls.inputCantidad.value;
+  }
+
   addOrEdit() {
 
-    this.seleccionado.cantidad = this.stockForm.value.cantidad;
-
     if (this.formValidation() === false) { return; }
+
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE, seleccionado:', this.seleccionado);
-
       const aux: IStock = this.seleccionado;
-      this.stock.push(this.seleccionado);
 
       this.accesoDatosService.postStock(this.seleccionado)
         .subscribe(result => {
+          this.stock.push(this.seleccionado);
           // aux.id = result; // // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
@@ -162,10 +166,11 @@ export class StockActualizarComponent implements OnInit {
       console.log('UPDATE, seleccionado:', this.seleccionado);
 
       this.accesoDatosService.putStock(this.seleccionado)
-        .subscribe(result => { this.loading = false; });
+        .subscribe(result => {
+          this.loading = false;
+        });
     }
 
-    // console.log(this.stock);
     this.filter();
     this.unselect();
   }
@@ -190,6 +195,14 @@ export class StockActualizarComponent implements OnInit {
 
     this.validaciones = '';
 
+    if (this.seleccionado.productoId === 0 ||  this.seleccionado.productoNombre === '') {
+      this.validaciones += 'Falta elegir el producto.\n';
+    }
+
+    if (this.seleccionado.localId === 0 || this.seleccionado.localNombre === '') {
+      this.validaciones += 'Falta elegir el local.\n';
+    }
+
     if (this.seleccionado.cantidad <= 0) {
       this.validaciones += 'Falta completar la cantidad.\n';
     }
@@ -198,10 +211,6 @@ export class StockActualizarComponent implements OnInit {
     }
     if (this.seleccionado.cantidad % 1 !== 0) {
       this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
-    }
-
-    if (this.seleccionado.productoNombre === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
     }
 
     return (this.validaciones === '') ? true : false;

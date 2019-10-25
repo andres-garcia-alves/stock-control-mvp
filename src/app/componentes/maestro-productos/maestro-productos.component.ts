@@ -60,10 +60,10 @@ export class MaestroProductosComponent implements OnInit {
 
       console.log('new');
       const aux: IProducto = this.seleccionado;
-      this.productos.push(this.seleccionado);
 
       this.accesoDatosService.postProducto(this.seleccionado)
         .subscribe(response => {
+          this.productos.push(this.seleccionado);
           // aux.id = response; // // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.productos.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;

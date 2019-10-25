@@ -57,11 +57,10 @@ export class MaestroLocalesComponent implements OnInit {
 
       console.log('new');
       const aux: ILocal = this.seleccionado;
-      this.locales.push(this.seleccionado);
 
       this.accesoDatosService.postLocal(this.seleccionado)
         .subscribe(response => {
-          console.log(response);
+          this.locales.push(this.seleccionado);
           // aux.id = response; // TODO: update desde back-end
           aux.id = Math.max.apply(Math, this.locales.map(x => x.id)) + 1; // TODO: comentar
           this.loading = false;
@@ -73,7 +72,7 @@ export class MaestroLocalesComponent implements OnInit {
       // console.log(this.seleccionado);
       this.accesoDatosService.putLocal(this.seleccionado)
         .subscribe(response => {
-          console.log(response);
+          // console.log(response);
           this.loading = false;
         });
     }

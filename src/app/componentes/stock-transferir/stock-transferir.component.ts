@@ -15,9 +15,9 @@ export class StockTransferirComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  stock: IStock[];
-  locales: ILocal[];
-  productos: IProducto[];
+  stock: IStock[] = [];
+  locales: ILocal[] = [];
+  productos: IProducto[] = [];
 
   seleccionado: IStock = new Stock();
   stockForm: FormGroup;
@@ -32,8 +32,8 @@ export class StockTransferirComponent implements OnInit {
     this.loading = true;
 
     this.stockForm = new FormGroup({
-      cantidad: new FormControl(''),
-      destino: new FormControl('')
+      destino: new FormControl(''),
+      cantidad: new FormControl('')
     });
 
     this.accesoDatosService.getStock()
@@ -57,13 +57,13 @@ export class StockTransferirComponent implements OnInit {
     this.stock = [ // TODO: comentar
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
       { id: 2, productoId: 1, productoNombre: 'Jeans Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 8 },
-      { id: 3, productoId: 1, productoNombre: 'Jeans Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 7 },
+      // { id: 3, productoId: 1, productoNombre: 'Jeans Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 7 },
       { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
       { id: 5, productoId: 2, productoNombre: 'Jeans Caballero', localId: 2, localNombre: 'Local Bs As', cantidad: 6 },
-      { id: 6, productoId: 2, productoNombre: 'Jeans Caballero', localId: 3, localNombre: 'Local Rosario', cantidad: 6 },
+      // { id: 6, productoId: 2, productoNombre: 'Jeans Caballero', localId: 3, localNombre: 'Local Rosario', cantidad: 6 },
       { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 },
       { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 },
-      { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
+      // { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
     ];
 
     this.locales = [ // TODO: comentar
@@ -81,25 +81,25 @@ export class StockTransferirComponent implements OnInit {
       { id: 6, nombre: 'Remera Caballero', precio: 1200 }
     ];
 
+    this.stockForm.controls.destino.setValue(0);
     this.filter();
   }
 
   select(stock: IStock) {
     this.seleccionado = stock;
-    // console.log(this.seleccionado);
   }
 
   unselect() {
     this.seleccionado = new Stock();
-    this.stockForm.controls.cantidad.setValue('');
-    this.stockForm.controls.destino.setValue(0);
     this.validaciones = '';
+
+    this.stockForm.controls.destino.setValue(0);
+    this.stockForm.controls.cantidad.setValue('');
   }
 
   filter() {
     this.filteredStock = this.stock.filter(
-      x => x.productoNombre.includes(this.filtroProducto) &&
-      x.localNombre.includes(this.filtroLocal));
+      x => x.productoNombre.includes(this.filtroProducto) && x.localNombre.includes(this.filtroLocal));
   }
 
   transferir() {
@@ -109,20 +109,30 @@ export class StockTransferirComponent implements OnInit {
     const transferirStock = new TransferirStock();
     transferirStock.productoId = this.seleccionado.id;
     transferirStock.localOrigenId = this.seleccionado.localId;
-
-    // TODO: OJO ACA es ID no Descripcion, ver solucion de stock-baja  !!!
     transferirStock.localDestinoId = this.stockForm.controls.destino.value;
     transferirStock.cantidad = this.stockForm.controls.cantidad.value;
 
     this.loading = true;
-    // console.log(bajaStock);
 
+    console.log(transferirStock);
     this.accesoDatosService.postTransferirStock(transferirStock)
       .subscribe(result => { this.loading = false; });
 
-    // TODO: copiado desde form BAJA, falta update de cantidades en el form actual
-    // this.seleccionado.cantidad -= bajaStock.cantidad;
+    const newStock = new Stock();
+    newStock.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1; // TODO: comentar
+    newStock.localId = this.stockForm.controls.destino.value;
+    newStock.localNombre = this.locales.find(x => x.id === this.stockForm.controls.destino.value).nombre;
+    newStock.productoId = this.seleccionado.productoId;
+    newStock.productoNombre = this.seleccionado.productoNombre;
+    newStock.cantidad = this.stockForm.controls.cantidad.value;
 
+    // actualizar UI
+    this.seleccionado.cantidad -= transferirStock.cantidad;
+
+    const existe = this.stock.find(x => x.productoId === newStock.productoId && x.localId === newStock.localId);
+    if (existe) { existe.cantidad += newStock.cantidad; } else { this.stock.push(newStock); }
+
+    this.filter();
     this.unselect();
   }
 
@@ -133,21 +143,22 @@ export class StockTransferirComponent implements OnInit {
     if (this.seleccionado.id === 0) {
       this.validaciones += 'Falta elegir el producto a transferir.\n';
     }
+
+    if (this.stockForm.controls.destino.value === 0 || this.stockForm.controls.destino.value === '') {
+      this.validaciones += 'Falta elegir el local destino.\n';
+    }
+    if (this.seleccionado.localId ===  this.stockForm.controls.destino.value) {
+      this.validaciones += 'El origen y el destino son los mismos.\n';
+    }
+
     if (this.stockForm.controls.cantidad.value <= 0) {
       this.validaciones += 'Falta completar la cantidad.\n';
     }
     if (this.stockForm.controls.cantidad.value > this.seleccionado.cantidad) {
       this.validaciones += 'La cantidad a transferir excede el stock en origen.\n';
     }
-    if (this.seleccionado.cantidad % 1 !== 0) {
+    if (this.stockForm.controls.cantidad.value % 1 !== 0) {
       this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
-    }
-
-    if (this.stockForm.controls.destino.value === '' || this.stockForm.controls.destino.value === 0) {
-      this.validaciones += 'Falta elegir el local destino.\n';
-    }
-    if (this.seleccionado.localNombre ===  this.stockForm.controls.destino.value) {
-      this.validaciones += 'El origen y el destino son los mismos.\n';
     }
 
     return (this.validaciones === '') ? true : false;
