@@ -24,17 +24,18 @@ export class MaestroLocalesComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.accesoDatosService.getLocales()
-      .subscribe(response => {
-        this.loading = false;
-        this.locales = response;
-    });
-
     /*this.locales = [
-      { id: 1, nombre: 'Local CABA' },
-      { id: 2, nombre: 'Local Bs As' },
-      { id: 3, nombre: 'Local Rosario' }
+      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
+      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
+      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
     ];*/
+
+    this.accesoDatosService.getLocales()
+    .subscribe(response => {
+      console.log('getLocales()', response);
+      this.locales = response;
+      this.loading = false;
+    });
   }
 
   select(local: ILocal) {
@@ -55,26 +56,27 @@ export class MaestroLocalesComponent implements OnInit {
 
     if (this.seleccionado.id === 0) { // nuevo
 
-      console.log('new');
+      console.log('CREATE', this.seleccionado);
       const aux: ILocal = this.seleccionado;
 
       this.accesoDatosService.postLocal(this.seleccionado)
-        .subscribe(response => {
-          this.locales.push(this.seleccionado);
-          // aux.id = response; // TODO: update desde back-end
-          aux.id = Math.max.apply(Math, this.locales.map(x => x.id)) + 1; // TODO: comentar
-          this.loading = false;
+      .subscribe(response => {
+        console.log('postLocal()', response);
+        // aux.id = response; // TODO: update desde back-end
+        aux.id = Math.max.apply(Math, this.locales.map(x => x.id)) + 1; // TODO: comentar
+        this.locales.push(this.seleccionado);
+        this.loading = false;
       });
 
     } else { // update
 
-      console.log('update');
-      // console.log(this.seleccionado);
+      console.log('UPDATE', this.seleccionado);
+
       this.accesoDatosService.putLocal(this.seleccionado)
-        .subscribe(response => {
-          // console.log(response);
-          this.loading = false;
-        });
+      .subscribe(response => {
+        console.log('putLocal()', response);
+        this.loading = false;
+      });
     }
 
     // console.log(this.locales);
@@ -84,15 +86,13 @@ export class MaestroLocalesComponent implements OnInit {
   delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-
     this.loading = true;
-    const id = this.seleccionado.id;
 
-    this.accesoDatosService.deleteLocal(id)
-      .subscribe(response => {
-        console.log(response);
-        this.loading = false;
-      });
+    this.accesoDatosService.deleteLocal(this.seleccionado.id)
+    .subscribe(response => {
+      console.log('deleteLocal()', response);
+      this.loading = false;
+    });
 
     this.locales = this.locales.filter(x => x !== this.seleccionado);
     this.seleccionado = new Local();

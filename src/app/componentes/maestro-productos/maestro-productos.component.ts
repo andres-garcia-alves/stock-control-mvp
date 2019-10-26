@@ -24,20 +24,21 @@ export class MaestroProductosComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.accesoDatosService.getProductos()
-      .subscribe(response => {
-        this.loading = false;
-        this.productos = response;
-    });
-
-    /*this.productos = [ // TODO: comentar
-      { id: 1, nombre: 'Jeans Dama', precio: 3500 },
-      { id: 2, nombre: 'Jeans Caballero', precio: 3600 },
-      { id: 3, nombre: 'Camisa Dama', precio: 1700 },
-      { id: 4, nombre: 'Camisa Caballero', precio: 1800 },
-      { id: 5, nombre: 'Remera Dama', precio: 1000 },
-      { id: 6, nombre: 'Remera Caballero', precio: 1200 }
+    /*this.productos = [
+      { id: 1, codigo_barra: '', nombre: 'Jeans Dama', descripcion: '', precio: 3500 },
+      { id: 2, codigo_barra: '', nombre: 'Jeans Caballero', descripcion: '', precio: 3600 },
+      { id: 3, codigo_barra: '', nombre: 'Camisa Dama', descripcion: '', precio: 1700 },
+      { id: 4, codigo_barra: '', nombre: 'Camisa Caballero', descripcion: '', precio: 1800 },
+      { id: 5, codigo_barra: '', nombre: 'Remera Dama', descripcion: '', precio: 1000 },
+      { id: 6, codigo_barra: '', nombre: 'Remera Caballero', descripcion: '', precio: 1200 }
     ];*/
+
+    this.accesoDatosService.getProductos()
+    .subscribe(response => {
+      console.log('getProductos()', response);
+      this.productos = response;
+      this.loading = false;
+    });
   }
 
   select(producto: IProducto) {
@@ -58,25 +59,26 @@ export class MaestroProductosComponent implements OnInit {
 
     if (this.seleccionado.id === 0) { // nuevo
 
-      console.log('new');
+      console.log('CREATE', this.seleccionado);
       const aux: IProducto = this.seleccionado;
 
       this.accesoDatosService.postProducto(this.seleccionado)
-        .subscribe(response => {
-          this.productos.push(this.seleccionado);
-          // aux.id = response; // // TODO: update desde back-end
-          aux.id = Math.max.apply(Math, this.productos.map(x => x.id)) + 1; // TODO: comentar
-          this.loading = false;
+      .subscribe(response => {
+        console.log('postProducto()', response);
+        // aux.id = response; // // TODO: update desde back-end
+        aux.id = Math.max.apply(Math, this.productos.map(x => x.id)) + 1; // TODO: comentar
+        this.productos.push(this.seleccionado);
+        this.loading = false;
       });
 
     } else { // update
 
-      console.log('update');
+      console.log('UPDATE');
       this.accesoDatosService.putProducto(this.seleccionado)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+      .subscribe(response => {
+        console.log('putProducto()', response);
+        this.loading = false;
+      });
     }
 
     // console.log(this.productos);
@@ -86,15 +88,13 @@ export class MaestroProductosComponent implements OnInit {
   delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-
     this.loading = true;
-    const id = this.seleccionado.id;
 
-    this.accesoDatosService.deleteProducto(id)
-      .subscribe(response => {
-        console.log(response);
-        this.loading = false;
-      });
+    this.accesoDatosService.deleteProducto(this.seleccionado.id)
+    .subscribe(response => {
+      console.log('deleteProducto()', response);
+      this.loading = false;
+    });
 
     this.productos = this.productos.filter(x => x !== this.seleccionado);
     this.seleccionado = new Producto();

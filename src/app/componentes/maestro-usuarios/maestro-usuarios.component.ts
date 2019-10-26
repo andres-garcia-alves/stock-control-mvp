@@ -24,12 +24,6 @@ export class MaestroUsuariosComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    /*this.accesoDatosService.getUsuarios()
-      .subscribe(response => {
-        // this.usuarios = result; // TODO: update desde back-end
-        this.loading = false;
-    });*/
-
     this.usuarios = [ // TODO: comentar
       { id: 1, nombre: 'Bonomini, Guido' },
       { id: 2, nombre: 'Debole, Nancy' },
@@ -38,6 +32,13 @@ export class MaestroUsuariosComponent implements OnInit {
       { id: 5, nombre: 'Tanaro, Maria' },
       { id: 6, nombre: 'Turreiro Manzini, Ignacio' }
     ];
+
+    this.accesoDatosService.getUsuarios()
+    .subscribe(response => {
+      console.log('getUsuarios()', response);
+      // this.usuarios = result; // TODO: update desde back-end
+      this.loading = false;
+    });
   }
 
   select(usuario: IUsuario) {
@@ -58,25 +59,28 @@ export class MaestroUsuariosComponent implements OnInit {
 
     if (this.seleccionado.id === 0) { // nuevo
 
-      console.log('new');
+      console.log('CREATE', this.seleccionado);
       const aux: IUsuario = this.seleccionado;
 
       this.accesoDatosService.postUsuario(this.seleccionado)
-        .subscribe(response => {
-          this.usuarios.push(this.seleccionado);
-          // aux.id = response; // TODO: update desde back-end
-          aux.id = Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1; // TODO: comentar
-          this.loading = false;
+      .subscribe(response => {
+        console.log('postUsuario()', response);
+        // aux.id = response; // TODO: update desde back-end
+        aux.id = Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1; // TODO: comentar
+        this.usuarios.push(this.seleccionado);
+        this.loading = false;
       });
 
     } else { // update
 
-      console.log('update');
+      console.log('UPDATE');
+
       this.accesoDatosService.putUsuario(this.seleccionado)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+      .subscribe(response => {
+        console.log('putUsuario()', response);
+        console.log(response);
+        this.loading = false;
+      });
     }
 
     // console.log(this.usuarios);
@@ -86,15 +90,13 @@ export class MaestroUsuariosComponent implements OnInit {
   delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-
     this.loading = true;
-    const id = this.seleccionado.id;
 
-    this.accesoDatosService.deleteUsuario(id)
-      .subscribe(response => {
-        console.log(response);
-        this.loading = false;
-      });
+    this.accesoDatosService.deleteUsuario(this.seleccionado.id)
+    .subscribe(response => {
+      console.log('deleteUsuario()', response);
+      this.loading = false;
+    });
 
     this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
     this.seleccionado = new Usuario();

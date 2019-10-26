@@ -33,17 +33,18 @@ export class StockBajaComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    this.accesoDatosService.getStock()
-    .subscribe(result => {
-      // this.stock = result; // TODO: update desde back-end
-      this.loading = false;
-    });
-
     this.stock = [ // TODO: comentar
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
       { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
       { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 }
     ];
+
+    this.accesoDatosService.getStock()
+    .subscribe(response => {
+      console.log('getStock()', response);
+      // this.stock = response; // TODO: update desde back-end
+      this.loading = false;
+    });
 
     this.filter();
     this.stockForm.controls.motivo.setValue(0);
@@ -78,7 +79,10 @@ export class StockBajaComponent implements OnInit {
     this.loading = true;
 
     this.accesoDatosService.postBajaStock(bajaStock)
-      .subscribe(result => { this.loading = false; });
+    .subscribe(response => {
+      console.log('postBajaStock()', response);
+      this.loading = false;
+    });
 
     this.seleccionado.cantidad -= bajaStock.cantidad;
     this.unselect();

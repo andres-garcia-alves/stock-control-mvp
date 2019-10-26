@@ -35,12 +35,11 @@ export class ChangePasswordComponent implements OnInit {
     };
 
     this.accesoDatosService.putLogin(this.login)
-      .subscribe(result => {
-        // console.log(result);
-
-        // TODO: update desde backend
-        // if (result !== '' && result !== null) {
-        this.mensaje = 'Contraseña modificada exitosamente.';
+    .subscribe(response => {
+      console.log('putLogin()', response);
+      // TODO: update desde backend
+      // if (result !== '' && result !== null) {
+      // this.mensaje = 'Contraseña modificada exitosamente.';
     });
   }
 }

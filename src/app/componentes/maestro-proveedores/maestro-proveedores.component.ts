@@ -24,20 +24,21 @@ export class MaestroProveedoresComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.accesoDatosService.getProveedores()
-      .subscribe(response => {
-        this.proveedores = response;
-        this.loading = false;
-    });
-
-    /* this.proveedores = [
-      { id: 1, nombre: 'Levis' },
-      { id: 2, nombre: 'Wrangler' },
-      { id: 3, nombre: '42 Street' },
-      { id: 4, nombre: 'Chocolate' },
-      { id: 5, nombre: 'Akiabara' },
-      { id: 6, nombre: 'Solido' }
+    /*this.proveedores = [ // TODO: comentar
+      { id: 1, direccion: '', nombre: 'Levis', numero_telefono: '' },
+      { id: 2, direccion: '', nombre: 'Wrangler', numero_telefono: '' },
+      { id: 3, direccion: '', nombre: '42 Street', numero_telefono: '' },
+      { id: 4, direccion: '', nombre: 'Chocolate', numero_telefono: '' },
+      { id: 5, direccion: '', nombre: 'Akiabara', numero_telefono: '' },
+      { id: 6, direccion: '', nombre: 'Solido', numero_telefono: '' }
     ];*/
+
+    this.accesoDatosService.getProveedores()
+    .subscribe(response => {
+      console.log('getProveedores()', response);
+      this.proveedores = response;
+      this.loading = false;
+    });
   }
 
   select(proveedor: IProveedor) {
@@ -58,25 +59,26 @@ export class MaestroProveedoresComponent implements OnInit {
 
     if (this.seleccionado.id === 0) { // nuevo
 
-      console.log('new');
+      console.log('CREATE', this.seleccionado);
       const aux: IProveedor = this.seleccionado;
 
       this.accesoDatosService.postProveedor(this.seleccionado)
-        .subscribe(response => {
-          this.proveedores.push(this.seleccionado);
-          // aux.id = response; // TODO: update desde back-end
-          aux.id = Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1; // TODO: comentar
-          this.loading = false;
+      .subscribe(response => {
+        console.log('postProveedor()', response);
+        // aux.id = response; // TODO: update desde back-end
+        aux.id = Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1; // TODO: comentar
+        this.proveedores.push(this.seleccionado);
+        this.loading = false;
       });
 
     } else { // update
 
-      console.log('update');
+      console.log('UPDATE');
       this.accesoDatosService.putProveedor(this.seleccionado)
-        .subscribe(response => {
-          console.log(response);
-          this.loading = false;
-        });
+      .subscribe(response => {
+        console.log('putProveedor()', response);
+        this.loading = false;
+      });
     }
 
     // console.log(this.proveedores);
@@ -86,15 +88,13 @@ export class MaestroProveedoresComponent implements OnInit {
   delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-
     this.loading = true;
-    const id = this.seleccionado.id;
 
-    this.accesoDatosService.deleteProveedor(id)
-      .subscribe(response => {
-        console.log(response);
-        this.loading = false;
-      });
+    this.accesoDatosService.deleteProveedor(this.seleccionado.id)
+    .subscribe(response => {
+      console.log('deleteProveedor()', response);
+      this.loading = false;
+    });
 
     this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
     this.seleccionado = new Proveedor();

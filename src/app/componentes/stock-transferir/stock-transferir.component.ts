@@ -36,23 +36,11 @@ export class StockTransferirComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    this.accesoDatosService.getStock()
-    .subscribe(result => {
-      // this.stock = result; // TODO: update desde back-end
-      this.loading = false;
-    });
-
-    this.accesoDatosService.getLocales()
-    .subscribe(result => {
-      // this.locales = result; // TODO: update desde back-end
-      this.loading = false;
-    });
-
-    this.accesoDatosService.getProductos()
-    .subscribe(result => {
-      // this.productos = result; // TODO: update desde back-end
-      this.loading = false;
-    });
+    /*this.locales = [ // TODO: comentar
+      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
+      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
+      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
+    ];*/
 
     this.stock = [ // TODO: comentar
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
@@ -66,20 +54,19 @@ export class StockTransferirComponent implements OnInit {
       // { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
     ];
 
-    this.locales = [ // TODO: comentar
-      { id: 1, nombre: 'Local CABA' },
-      { id: 2, nombre: 'Local Bs As' },
-      { id: 3, nombre: 'Local Rosario' }
-    ];
+    this.accesoDatosService.getLocales()
+    .subscribe(response => {
+      console.log('getLocales()', response);
+      this.locales = response;
+      this.loading = false;
+    });
 
-    this.productos = [ // TODO: comentar
-      { id: 1, nombre: 'Jeans Dama', precio: 3500 },
-      { id: 2, nombre: 'Jeans Caballero', precio: 3600 },
-      { id: 3, nombre: 'Camisa Dama', precio: 1700 },
-      { id: 4, nombre: 'Camisa Caballero', precio: 1800 },
-      { id: 5, nombre: 'Remera Dama', precio: 1000 },
-      { id: 6, nombre: 'Remera Caballero', precio: 1200 }
-    ];
+    this.accesoDatosService.getStock()
+    .subscribe(response => {
+      console.log('getStock()', response);
+      // this.stock = response; // TODO: update desde back-end
+      this.loading = false;
+    });
 
     this.stockForm.controls.destino.setValue(0);
     this.filter();
@@ -116,7 +103,10 @@ export class StockTransferirComponent implements OnInit {
 
     console.log(transferirStock);
     this.accesoDatosService.postTransferirStock(transferirStock)
-      .subscribe(result => { this.loading = false; });
+    .subscribe(response => {
+      console.log('postTransferirStock()', response);
+      this.loading = false;
+    });
 
     const newStock = new Stock();
     newStock.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1; // TODO: comentar

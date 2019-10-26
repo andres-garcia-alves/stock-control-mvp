@@ -35,4 +35,6 @@
   <br/>
   <div *ngIf="loading">loading...</div>
   <div *ngIf="validaciones" style="white-space: pre;">{{ validaciones }}</div>
+  <pre *ngIf="debug">debug:<br/>{{ debug | json }}</pre>
+  <br/>
 </div>

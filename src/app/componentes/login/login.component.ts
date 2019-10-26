@@ -32,6 +32,14 @@ export class LoginComponent implements OnInit {
       password: this.registroForm.value.contraseña
     };
 
+    /*this.accesoDatosService.postLogin(this.login)
+    .subscribe(response => {
+      console.log('postLogin()', response);
+      if (result !== '' && result !== null) {
+      sessionStorage.setItem('token', result); // TODO: descomentar
+      }
+    });*/
+
     // TODO: comentar esta sección
     if (this.login.usuario.toLowerCase() === 'admin' && this.login.password.toLowerCase() === '1234') {
       sessionStorage.setItem('user', this.login.usuario);
@@ -40,13 +48,5 @@ export class LoginComponent implements OnInit {
     } else {
       this.mensaje = 'Usuario y/o contraseña incorrectos.';
     }
-
-    /*this.accesoDatosService.postLogin(this.login)
-      .subscribe(result => {
-        console.log(result);
-        if (result !== '' && result !== null) {
-        sessionStorage.setItem('token', result); // TODO: descomentar
-        }
-    });*/
   }
 }
