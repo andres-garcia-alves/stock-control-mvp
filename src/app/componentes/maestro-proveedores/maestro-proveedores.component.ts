@@ -12,6 +12,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class MaestroProveedoresComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
@@ -24,7 +25,7 @@ export class MaestroProveedoresComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    /*this.proveedores = [ // TODO: comentar
+    /*this.proveedores = [
       { id: 1, direccion: '', nombre: 'Levis', numero_telefono: '' },
       { id: 2, direccion: '', nombre: 'Wrangler', numero_telefono: '' },
       { id: 3, direccion: '', nombre: '42 Street', numero_telefono: '' },
@@ -60,29 +61,24 @@ export class MaestroProveedoresComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      const aux: IProveedor = this.seleccionado;
-
       this.accesoDatosService.postProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('postProveedor()', response);
-        // aux.id = response; // TODO: update desde back-end
-        aux.id = Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1; // TODO: comentar
+        this.seleccionado.id = response.id; // Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1;
         this.proveedores.push(this.seleccionado);
+        this.seleccionado = new Proveedor();
         this.loading = false;
       });
 
     } else { // update
 
-      console.log('UPDATE');
+      console.log('UPDATE', this.seleccionado);
       this.accesoDatosService.putProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('putProveedor()', response);
         this.loading = false;
       });
     }
-
-    // console.log(this.proveedores);
-    this.seleccionado = new Proveedor();
   }
 
   delete() {
@@ -90,6 +86,7 @@ export class MaestroProveedoresComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
+    console.log('DELETE', this.seleccionado);
     this.accesoDatosService.deleteProveedor(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProveedor()', response);

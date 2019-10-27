@@ -12,6 +12,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class MaestroLocalesComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
@@ -57,30 +58,24 @@ export class MaestroLocalesComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      const aux: ILocal = this.seleccionado;
-
       this.accesoDatosService.postLocal(this.seleccionado)
       .subscribe(response => {
         console.log('postLocal()', response);
-        // aux.id = response; // TODO: update desde back-end
-        aux.id = Math.max.apply(Math, this.locales.map(x => x.id)) + 1; // TODO: comentar
+        this.seleccionado.id = response.id; // Math.max.apply(Math, this.locales.map(x => x.id)) + 1;
         this.locales.push(this.seleccionado);
+        this.seleccionado = new Local();
         this.loading = false;
       });
 
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-
       this.accesoDatosService.putLocal(this.seleccionado)
       .subscribe(response => {
         console.log('putLocal()', response);
         this.loading = false;
       });
     }
-
-    // console.log(this.locales);
-    this.seleccionado = new Local();
   }
 
   delete() {
@@ -88,6 +83,7 @@ export class MaestroLocalesComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
+    console.log('DELETE', this.seleccionado);
     this.accesoDatosService.deleteLocal(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteLocal()', response);

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ILocal, IProducto, IStock } from 'src/app/interfaces';
-import { Stock, TransferirStock } from 'src/app/entidades';
+import { ILocal, IProducto, IPlainStock } from 'src/app/interfaces';
+import { PlainStock, TransferirStock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 
 @Component({
@@ -12,19 +12,20 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class StockTransferirComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
-  stock: IStock[] = [];
   locales: ILocal[] = [];
   productos: IProducto[] = [];
+  plainStock: IPlainStock[] = [];
 
-  seleccionado: IStock = new Stock();
+  seleccionado: IPlainStock = new PlainStock();
   stockForm: FormGroup;
 
   filtroProducto = '';
   filtroLocal = 'CABA';
-  filteredStock: IStock[];
+  filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -36,48 +37,66 @@ export class StockTransferirComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    /*this.locales = [ // TODO: comentar
+    /*this.locales = [
       { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
       { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
       { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
     ];*/
 
-    this.stock = [ // TODO: comentar
+    /*this.plainStock = [
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
       { id: 2, productoId: 1, productoNombre: 'Jeans Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 8 },
-      // { id: 3, productoId: 1, productoNombre: 'Jeans Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 7 },
       { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
       { id: 5, productoId: 2, productoNombre: 'Jeans Caballero', localId: 2, localNombre: 'Local Bs As', cantidad: 6 },
-      // { id: 6, productoId: 2, productoNombre: 'Jeans Caballero', localId: 3, localNombre: 'Local Rosario', cantidad: 6 },
       { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 },
-      { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 },
-      // { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
-    ];
+      { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 }
+    ];*/
 
     this.accesoDatosService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
-      this.loading = false;
-    });
 
-    this.accesoDatosService.getStock()
-    .subscribe(response => {
-      console.log('getStock()', response);
-      // this.stock = response; // TODO: update desde back-end
-      this.loading = false;
+      this.accesoDatosService.getProductos()
+      .subscribe(response2 => {
+        console.log('getProductos()', response2);
+        this.productos = response2;
+
+        this.accesoDatosService.getStock()
+        .subscribe(response3 => {
+          console.log('getStock()', response3);
+          this.buildStockFromResponse(response3);
+          this.loading = false;
+          this.filter();
+        });
+      });
     });
 
     this.stockForm.controls.destino.setValue(0);
-    this.filter();
   }
 
-  select(stock: IStock) {
+  buildStockFromResponse(response: any[]) {
+    for (let i = 0; i < response.length; i++) {
+
+      const aux = new PlainStock();
+      aux.id = i + 1;
+      aux.localId = response[i].tienda;
+      aux.localNombre = this.locales.find(x => x.id === response[i].tienda).nombre;
+      aux.productoId = response[i].producto;
+      aux.productoNombre = this.productos.find(x => x.id === response[i].producto).nombre;
+      aux.cantidad = response[i].cantidad;
+
+      this.plainStock.push(aux);
+      console.log('aux', aux);
+    }
+  }
+
+  select(stock: IPlainStock) {
     this.seleccionado = stock;
   }
 
   unselect() {
-    this.seleccionado = new Stock();
+    this.seleccionado = new PlainStock();
     this.validaciones = '';
 
     this.stockForm.controls.destino.setValue(0);
@@ -85,42 +104,41 @@ export class StockTransferirComponent implements OnInit {
   }
 
   filter() {
-    this.filteredStock = this.stock.filter(
+    this.filteredStock = this.plainStock.filter(
       x => x.productoNombre.includes(this.filtroProducto) && x.localNombre.includes(this.filtroLocal));
   }
 
   transferir() {
 
     if (this.formValidation() === false) { return; }
+    this.loading = true;
 
     const transferirStock = new TransferirStock();
     transferirStock.productoId = this.seleccionado.id;
     transferirStock.localOrigenId = this.seleccionado.localId;
     transferirStock.localDestinoId = this.stockForm.controls.destino.value;
     transferirStock.cantidad = this.stockForm.controls.cantidad.value;
+    console.log('TransferirStock', transferirStock);
 
-    this.loading = true;
-
-    console.log(transferirStock);
     this.accesoDatosService.postTransferirStock(transferirStock)
     .subscribe(response => {
       console.log('postTransferirStock()', response);
       this.loading = false;
     });
 
-    const newStock = new Stock();
-    newStock.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1; // TODO: comentar
+    // actualizar UI
+    const newStock = new PlainStock();
+    newStock.id = Math.max.apply(Math, this.plainStock.map(x => x.id)) + 1;
     newStock.localId = this.stockForm.controls.destino.value;
     newStock.localNombre = this.locales.find(x => x.id === this.stockForm.controls.destino.value).nombre;
     newStock.productoId = this.seleccionado.productoId;
     newStock.productoNombre = this.seleccionado.productoNombre;
     newStock.cantidad = this.stockForm.controls.cantidad.value;
 
-    // actualizar UI
     this.seleccionado.cantidad -= transferirStock.cantidad;
 
-    const existe = this.stock.find(x => x.productoId === newStock.productoId && x.localId === newStock.localId);
-    if (existe) { existe.cantidad += newStock.cantidad; } else { this.stock.push(newStock); }
+    const existe = this.plainStock.find(x => x.productoId === newStock.productoId && x.localId === newStock.localId);
+    if (existe) { existe.cantidad += newStock.cantidad; } else { this.plainStock.push(newStock); }
 
     this.filter();
     this.unselect();

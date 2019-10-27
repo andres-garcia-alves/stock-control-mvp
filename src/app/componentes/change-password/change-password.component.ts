@@ -13,6 +13,7 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
+  debug: any;
   login: ILogin;
   mensaje = 'Mínimo 4 caracteres.';
 

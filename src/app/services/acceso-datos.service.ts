@@ -47,8 +47,8 @@ export class AccesoDatosService {
     return this.http.get<ILocal>(this.apiLocales + id, this.httpOptions());
   }
 
-  postLocal(local: ILocal): Observable<number> {
-    return this.http.post<number>(this.apiLocales, local, this.httpOptions())
+  postLocal(local: ILocal): Observable<ILocal> {
+    return this.http.post<ILocal>(this.apiLocales, local, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -145,7 +145,7 @@ export class AccesoDatosService {
   }
 
   putStock(stock: IStock) {
-    return this.http.put<IStock>(this.apiStock + stock.id, stock, this.httpOptions())
+    return this.http.put<IStock>(this.apiStock, stock, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 

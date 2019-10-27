@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ILocal, IProducto, IStock } from 'src/app/interfaces';
-import { Stock } from 'src/app/entidades';
+import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
+import { PlainStock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { HttpBackend } from '@angular/common/http';
 
 @Component({
   selector: 'app-stock-actualizar',
@@ -12,21 +13,21 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class StockActualizarComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
-  debug: any;
 
-  stock: IStock[] = [];
   locales: ILocal[] = [];
   productos: IProducto[] = [];
+  plainStock: IPlainStock[] = [];
 
-  seleccionado: IStock = new Stock();
-  seleccionadoBackup: IStock = new Stock();
+  seleccionado: IPlainStock = new PlainStock();
+  seleccionadoBackup: IPlainStock = new PlainStock();
   stockForm: FormGroup;
 
   filtroProducto = '';
   filtroLocal = 'CABA';
-  filteredStock: IStock[];
+  filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -40,7 +41,13 @@ export class StockActualizarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    /*this.productos = [ // TODO: comentar
+    /*this.locales = [
+      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
+      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
+      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
+    ];*/
+
+    /*this.productos = [
       { id: 1, codigo_barra: '', nombre: 'Jeans Dama', descripcion: '', precio: 3500 },
       { id: 2, codigo_barra: '', nombre: 'Jeans Caballero', descripcion: '', precio: 3600 },
       { id: 3, codigo_barra: '', nombre: 'Camisa Dama', descripcion: '', precio: 1700 },
@@ -49,13 +56,7 @@ export class StockActualizarComponent implements OnInit {
       { id: 6, codigo_barra: '', nombre: 'Remera Caballero', descripcion: '', precio: 1200 }
     ];*/
 
-    /*this.locales = [ // TODO: comentar
-      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
-      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
-      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
-    ];*/
-
-    this.stock = [ // TODO: comentar
+    /*this.plainStock = [
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
       { id: 2, productoId: 1, productoNombre: 'Jeans Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 8 },
       { id: 3, productoId: 1, productoNombre: 'Jeans Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 7 },
@@ -65,35 +66,48 @@ export class StockActualizarComponent implements OnInit {
       { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 },
       { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 },
       { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
-    ];
-
-    this.accesoDatosService.getProductos()
-    .subscribe(response => {
-      console.log('getProductos()', response);
-      this.productos = response;
-      this.loading = false;
-    });
+    ];*/
 
     this.accesoDatosService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
-      this.loading = false;
-    });
 
-    this.accesoDatosService.getStock()
-    .subscribe(response => {
-      console.log('getStock()', response);
-      // this.stock = response; // TODO: update desde back-end
-      this.loading = false;
-    });
+      this.accesoDatosService.getProductos()
+      .subscribe(response2 => {
+        console.log('getProductos()', response2);
+        this.productos = response2;
 
-    this.filter();
+        this.accesoDatosService.getStock()
+        .subscribe(response3 => {
+          console.log('getStock()', response3);
+          this.buildStockFromResponse(response3);
+          this.loading = false;
+          this.filter();
+        });
+      });
+    });
   }
 
-  select(stock: IStock) {
+  buildStockFromResponse(response: IStock[]) {
+    for (let i = 0; i < response.length; i++) {
+
+      const aux = new PlainStock();
+      aux.id = i + 1;
+      aux.localId = response[i].localId;
+      aux.localNombre = this.locales.find(x => x.id === response[i].localId).nombre;
+      aux.productoId = response[i].productoId;
+      aux.productoNombre = this.productos.find(x => x.id === response[i].productoId).nombre;
+      aux.cantidad = response[i].cantidad;
+
+      this.plainStock.push(aux);
+      console.log('aux', aux);
+    }
+  }
+
+  select(stock: IPlainStock) {
     this.seleccionado = stock;
-    this.seleccionadoBackup = new Stock(stock);
+    this.seleccionadoBackup = new PlainStock(stock);
 
     this.stockForm.controls.selectProductos.disable();
     this.stockForm.controls.selectLocales.disable();
@@ -101,11 +115,11 @@ export class StockActualizarComponent implements OnInit {
   }
 
   unselect() {
-    const index = this.stock.findIndex(x => x.id === this.seleccionadoBackup.id);
-    this.stock[index] = this.seleccionadoBackup;
+    const index = this.plainStock.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.plainStock[index] = this.seleccionadoBackup;
     this.filter();
 
-    this.seleccionado = new Stock();
+    this.seleccionado = new PlainStock();
     this.validaciones = '';
 
     this.stockForm.controls.selectProductos.setValue('');
@@ -116,7 +130,7 @@ export class StockActualizarComponent implements OnInit {
   }
 
   filter() {
-    this.filteredStock = this.stock.filter(
+    this.filteredStock = this.plainStock.filter(
       x => x.productoNombre.includes(this.filtroProducto) && x.localNombre.includes(this.filtroLocal));
   }
 
@@ -149,52 +163,53 @@ export class StockActualizarComponent implements OnInit {
   addOrEdit() {
 
     if (this.formValidation() === false) { return; }
-
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      const aux: IStock = this.seleccionado;
+      const aux: IPlainStock = this.seleccionado;
 
       this.accesoDatosService.postStock(this.seleccionado)
       .subscribe(response => {
         console.log('postStock()', response);
-        // aux.id = response; // // TODO: update desde back-end
-        aux.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1; // TODO: comentar
-        this.stock.push(this.seleccionado);
+
+        // CONTINUAR ACA !!!
+        // - Actualizar con el ID recibido desde Backend
+        // - Ensamblar objeto Stock para el backend (renombrar actual Stock -> PlainStock ??)
+
+        this.seleccionado.id = response.id; // Math.max.apply(Math, this.stock.map(x => x.id)) + 1;
+        // aux.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1;
+        this.plainStock.push(this.seleccionado);
+        this.unselect(); // this.filter();
         this.loading = false;
       });
 
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-
       this.accesoDatosService.putStock(this.seleccionado)
       .subscribe(response => {
         console.log('putStock()', response);
+        this.unselect(); // this.filter();
         this.loading = false;
       });
     }
-
-    this.filter();
-    this.unselect();
   }
 
   delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-
     this.loading = true;
-    console.log('DELETE', this.seleccionado.id);
 
+    console.log('DELETE', this.seleccionado);
     this.accesoDatosService.deleteStock(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteStock()', response);
       this.loading = false;
     });
 
-    this.stock = this.stock.filter(x => x !== this.seleccionado);
+    this.plainStock = this.plainStock.filter(x => x !== this.seleccionado);
 
     this.filter();
     this.unselect();

@@ -12,6 +12,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class MaestroProductosComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
@@ -60,29 +61,24 @@ export class MaestroProductosComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      const aux: IProducto = this.seleccionado;
-
       this.accesoDatosService.postProducto(this.seleccionado)
       .subscribe(response => {
         console.log('postProducto()', response);
-        // aux.id = response; // // TODO: update desde back-end
-        aux.id = Math.max.apply(Math, this.productos.map(x => x.id)) + 1; // TODO: comentar
+        this.seleccionado.id = response.id; // Math.max.apply(Math, this.productos.map(x => x.id)) + 1;
         this.productos.push(this.seleccionado);
+        this.seleccionado = new Producto();
         this.loading = false;
       });
 
     } else { // update
 
-      console.log('UPDATE');
+      console.log('UPDATE', this.seleccionado);
       this.accesoDatosService.putProducto(this.seleccionado)
       .subscribe(response => {
         console.log('putProducto()', response);
         this.loading = false;
       });
     }
-
-    // console.log(this.productos);
-    this.seleccionado = new Producto();
   }
 
   delete() {
@@ -90,6 +86,7 @@ export class MaestroProductosComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
+    console.log('DELETE', this.seleccionado);
     this.accesoDatosService.deleteProducto(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProducto()', response);

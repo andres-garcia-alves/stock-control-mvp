@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { IStock } from 'src/app/interfaces';
-import { Stock, BajaStock } from 'src/app/entidades';
+import { ILocal, IProducto, IPlainStock } from 'src/app/interfaces';
+import { PlainStock, BajaStock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 
 @Component({
@@ -12,16 +12,19 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class StockBajaComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
-  stock: IStock[] = [];
+  locales: ILocal[] = [];
+  productos: IProducto[] = [];
+  plainStock: IPlainStock[] = [];
 
-  seleccionado: IStock = new Stock();
+  seleccionado: IPlainStock = new PlainStock();
   stockForm: FormGroup;
 
   filtroProducto = '';
-  filteredStock: IStock[];
+  filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
 
@@ -33,29 +36,58 @@ export class StockBajaComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    this.stock = [ // TODO: comentar
+    /*this.plainStock = [
       { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
       { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
       { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 }
-    ];
+    ];*/
 
-    this.accesoDatosService.getStock()
+    this.accesoDatosService.getLocales()
     .subscribe(response => {
-      console.log('getStock()', response);
-      // this.stock = response; // TODO: update desde back-end
-      this.loading = false;
+      console.log('getLocales()', response);
+      this.locales = response;
+
+      this.accesoDatosService.getProductos()
+      .subscribe(response2 => {
+        console.log('getProductos()', response2);
+        this.productos = response2;
+
+        this.accesoDatosService.getStock()
+        .subscribe(response3 => {
+          console.log('getStock()', response3);
+          this.buildStockFromResponse(response3);
+          this.loading = false;
+          this.filter();
+        });
+      });
     });
 
     this.filter();
     this.stockForm.controls.motivo.setValue(0);
   }
 
-  select(stock: IStock) {
+  buildStockFromResponse(response: any[]) {
+    for (let i = 0; i < response.length; i++) {
+
+      const aux = new PlainStock();
+      aux.id = i + 1;
+      aux.localId = response[i].tienda;
+      aux.localNombre = this.locales.find(x => x.id === response[i].tienda).nombre;
+      aux.productoId = response[i].producto;
+      aux.productoNombre = this.productos.find(x => x.id === response[i].producto).nombre;
+      aux.cantidad = response[i].cantidad;
+
+      this.plainStock.push(aux);
+      console.log('aux', aux);
+    }
+  }
+
+  select(stock: IPlainStock) {
     this.seleccionado = stock;
   }
 
   unselect() {
-    this.seleccionado = new Stock();
+    this.seleccionado = new PlainStock();
     this.validaciones = '';
 
     this.stockForm.controls.motivo.setValue(0);
@@ -63,7 +95,7 @@ export class StockBajaComponent implements OnInit {
   }
 
   filter() {
-    this.filteredStock = this.stock.filter(x => x.productoNombre.includes(this.filtroProducto));
+    this.filteredStock = this.plainStock.filter(x => x.productoNombre.includes(this.filtroProducto));
   }
 
   delete() {

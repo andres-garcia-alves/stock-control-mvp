@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private accesoDatosService: AccesoDatosService) { }
 
+  debug: any;
   login: ILogin;
   mensaje: string = null;
 

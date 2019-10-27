@@ -3,7 +3,7 @@ export * from './ILogin';
 export * from './IProducto';
 export * from './IProveedor';
 export * from './IUsuario';
-
-export * from './IStock';
+export * from './IPlain-Stock';
 export * from './IBaja-Stock';
+export * from './IStock';
 export * from './ITransferir-Stock';

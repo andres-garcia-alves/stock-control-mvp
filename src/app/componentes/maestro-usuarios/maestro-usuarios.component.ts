@@ -12,6 +12,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class MaestroUsuariosComponent implements OnInit {
 
+  debug: any;
   loading: boolean;
   validaciones: string;
 
@@ -36,7 +37,7 @@ export class MaestroUsuariosComponent implements OnInit {
     this.accesoDatosService.getUsuarios()
     .subscribe(response => {
       console.log('getUsuarios()', response);
-      // this.usuarios = result; // TODO: update desde back-end
+      // this.usuarios = response; // TODO: update desde back-end
       this.loading = false;
     });
   }
@@ -60,21 +61,18 @@ export class MaestroUsuariosComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      const aux: IUsuario = this.seleccionado;
-
       this.accesoDatosService.postUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('postUsuario()', response);
-        // aux.id = response; // TODO: update desde back-end
-        aux.id = Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1; // TODO: comentar
+        this.seleccionado.id = response.id; // Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1;
         this.usuarios.push(this.seleccionado);
+        this.seleccionado = new Usuario();
         this.loading = false;
       });
 
     } else { // update
 
-      console.log('UPDATE');
-
+      console.log('UPDATE', this.seleccionado);
       this.accesoDatosService.putUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('putUsuario()', response);
@@ -82,9 +80,6 @@ export class MaestroUsuariosComponent implements OnInit {
         this.loading = false;
       });
     }
-
-    // console.log(this.usuarios);
-    this.seleccionado = new Usuario();
   }
 
   delete() {
@@ -92,6 +87,7 @@ export class MaestroUsuariosComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
+    console.log('DELETE', this.seleccionado);
     this.accesoDatosService.deleteUsuario(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteUsuario()', response);
