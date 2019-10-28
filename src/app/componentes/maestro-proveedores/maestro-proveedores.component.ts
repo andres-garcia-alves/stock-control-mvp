@@ -105,8 +105,8 @@ export class MaestroProveedoresComponent implements OnInit {
       this.validaciones += 'Falta completar el nombre.\n';
     }
 
-    if (this.seleccionado.nombre.length > 30) {
-      this.validaciones += 'La longitud máxima del texto es 30 carácteres.\n';
+    if (this.seleccionado.direccion === '') {
+      this.validaciones += 'Falta completar la dirección.\n';
     }
 
     return (this.validaciones === '') ? true : false;

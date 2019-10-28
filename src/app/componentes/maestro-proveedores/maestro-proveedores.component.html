@@ -22,7 +22,9 @@
             Editar...
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" [(ngModel)]="seleccionado.nombre" placeholder="Nombre" name="nombre">
+            <input type="text" class="form-control" [(ngModel)]="seleccionado.nombre" placeholder="Nombre" name="nombre" maxlength="32" required>
+            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.direccion" placeholder="Direccion" name="direccion" maxlength="64" required>
+            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.numero_telefono" placeholder="Telefono" name="telefono" maxlength="32">
           </div>
           <button class="btn btn-primary" (click)="addOrEdit()">{{ seleccionado.id === 0 ? 'Crear Nuevo' : 'Modificar' }}</button>
           <button class="btn btn-secondary ml-3 mr-5" *ngIf="seleccionado.id !== 0" (click)="unselect()">Cancelar</button>
