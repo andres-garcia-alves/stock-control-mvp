@@ -1,2 +1,38 @@
 <br/>
 <h4>Ventas - Registrar Venta</h4>
+
+<br/>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="card-title">
+            Editar...
+          </div>
+          <form [formGroup]="ventaForm">
+            <div class="form-group">
+              <select id="selectProductos" class="form-control mt-3" formControlName="selectProductos">
+                <option Value="0">** Elegir Producto **</option>
+                <option *ngFor="let producto of productos" [(ngValue)]="producto.id">
+                  {{ producto.nombre }}
+                </option>
+              </select>
+              <input id="inputCantidad" type="number" class="form-control mt-3" formControlName="inputCantidad" placeholder="Cantidad">
+            </div>
+          </form>
+          <button class="btn btn-primary" (click)="add()">Registrar Venta</button>
+          <button class="btn btn-secondary ml-3 mr-5" (click)="unselect()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br/>
+
+  <div *ngIf="loading">loading...</div>
+  <div *ngIf="validaciones" style="white-space: pre;">{{ validaciones }}</div>
+  <pre *ngIf="debug">debug:<br/>{{ debug | json }}</pre>
+  <br/>
+</div>

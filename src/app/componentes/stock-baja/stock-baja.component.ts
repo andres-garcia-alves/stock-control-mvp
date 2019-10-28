@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ILocal, IProducto, IPlainStock } from 'src/app/interfaces';
-import { PlainStock, BajaStock } from 'src/app/entidades';
+import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
+import { PlainStock, Stock, BajaStock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 
 @Component({
@@ -24,6 +24,7 @@ export class StockBajaComponent implements OnInit {
   stockForm: FormGroup;
 
   filtroProducto = '';
+  filtroLocal = '';
   filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
@@ -52,7 +53,7 @@ export class StockBajaComponent implements OnInit {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStock()
+        this.accesoDatosService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildStockFromResponse(response3);
@@ -66,7 +67,7 @@ export class StockBajaComponent implements OnInit {
     this.stockForm.controls.motivo.setValue(0);
   }
 
-  buildStockFromResponse(response: any[]) {
+  buildStockFromResponse(response: IStock[]) {
     for (let i = 0; i < response.length; i++) {
 
       const aux = new PlainStock();
@@ -95,29 +96,39 @@ export class StockBajaComponent implements OnInit {
   }
 
   filter() {
-    this.filteredStock = this.plainStock.filter(x => x.productoNombre.includes(this.filtroProducto));
+    this.filteredStock = this.plainStock.filter(
+      x => x.productoNombre.includes(this.filtroProducto) && x.localNombre.includes(this.filtroLocal));
   }
 
   delete() {
 
     if (this.formValidation() === false) { return; }
     if (confirm('Está seguro que desea generar la baja?') === false ) { return; }
-
-    const bajaStock = new BajaStock();
-    bajaStock.id = this.seleccionado.id;
-    bajaStock.motivo = this.stockForm.controls.motivo.value;
-    bajaStock.cantidad = this.stockForm.controls.cantidad.value;
-
     this.loading = true;
 
-    this.accesoDatosService.postBajaStock(bajaStock)
+    /*const bajaStock = new BajaStock();
+    bajaStock.id = this.seleccionado.id;
+    bajaStock.motivo = this.stockForm.controls.motivo.value;
+    bajaStock.cantidad = this.stockForm.controls.cantidad.value;*/
+
+    const stock = new Stock(this.seleccionado); // TODO: ver dsp del arreglo
+    stock.cantidad -= this.stockForm.controls.cantidad.value;
+
+    this.accesoDatosService.putStock(999, stock)
     .subscribe(response => {
-      console.log('postBajaStock()', response);
+      console.log('putStock()', response);
+      this.seleccionado.cantidad = response.cantidad;
+      this.unselect();
       this.loading = false;
     });
 
-    this.seleccionado.cantidad -= bajaStock.cantidad;
-    this.unselect();
+    /*this.accesoDatosService.postBajaStock(bajaStock)
+    .subscribe(response => {
+      console.log('postBajaStock()', response);
+      this.seleccionado.cantidad = response.cantidad;
+      this.unselect();
+      this.loading = false;
+    });*/
   }
 
   formValidation(): boolean {

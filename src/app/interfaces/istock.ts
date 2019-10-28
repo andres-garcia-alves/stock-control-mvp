@@ -1,5 +1,5 @@
 export interface IStock {
-  productoId: number;
-  localId: number;
+  producto: number;
+  tienda: number;
   cantidad: number;
 }

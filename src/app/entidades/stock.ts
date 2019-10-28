@@ -1,7 +1,15 @@
-import { IStock } from 'src/app/interfaces';
+import { IStock, IPlainStock } from 'src/app/interfaces';
 
 export class Stock implements IStock {
-  productoId = 0;
-  localId = 0;
+  producto = 0;
+  tienda = 0;
   cantidad = 0;
+
+  constructor(plainStock?: IPlainStock) {
+    if (plainStock) {
+        this.producto = plainStock.productoId;
+        this.tienda = plainStock.localId;
+        this.cantidad = plainStock.cantidad;
+    }
+  }
 }

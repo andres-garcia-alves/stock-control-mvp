@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ILocal, IProducto, IPlainStock } from 'src/app/interfaces';
-import { PlainStock, TransferirStock } from 'src/app/entidades';
+import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
+import { PlainStock, Stock, TransferirStock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class StockTransferirComponent implements OnInit {
   stockForm: FormGroup;
 
   filtroProducto = '';
-  filtroLocal = 'CABA';
+  filtroLocal = '';
   filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
@@ -62,7 +62,7 @@ export class StockTransferirComponent implements OnInit {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStock()
+        this.accesoDatosService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildStockFromResponse(response3);
@@ -75,7 +75,7 @@ export class StockTransferirComponent implements OnInit {
     this.stockForm.controls.destino.setValue(0);
   }
 
-  buildStockFromResponse(response: any[]) {
+  buildStockFromResponse(response: IStock[]) {
     for (let i = 0; i < response.length; i++) {
 
       const aux = new PlainStock();

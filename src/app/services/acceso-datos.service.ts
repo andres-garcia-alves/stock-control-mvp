@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 
 import { ILogin, ILocal, IProducto, IProveedor, IUsuario } from '../interfaces/index';
-import { IStock, IBajaStock, ITransferirStock } from '../interfaces/index';
+import { IStock, IVenta, IBajaStock, ITransferirStock } from '../interfaces/index';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,7 @@ export class AccesoDatosService {
   apiUsuarios = this.urlBase + 'usuarios/';
 
   apiStock = this.urlBase + 'stock/';
+  apiVentas = this.urlBase + 'ventas/';
   apiBajaStock = this.urlBase + 'baja-stock/';
   apiTransferirStock = this.urlBase + 'transferir-stock/';
 
@@ -135,7 +136,7 @@ export class AccesoDatosService {
   }
 
 
-  getStock() {
+  getStocks() {
     return this.http.get<IStock[]>(this.apiStock, this.httpOptions());
   }
 
@@ -144,13 +145,37 @@ export class AccesoDatosService {
       .pipe( catchError(this.handleError) );
   }
 
-  putStock(stock: IStock) {
-    return this.http.put<IStock>(this.apiStock, stock, this.httpOptions())
+  putStock(id: number, stock: IStock) {
+    return this.http.put<IStock>(this.apiStock + id, stock, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
   deleteStock(id: number) {
     return this.http.delete(this.apiStock + id, this.httpOptions())
+      .pipe( catchError(this.handleError) );
+  }
+
+
+  getVentas() {
+    return this.http.get<IVenta[]>(this.apiVentas, this.httpOptions());
+  }
+
+  getVenta(id: number) {
+    return this.http.get<IVenta[]>(this.apiVentas + id, this.httpOptions());
+  }
+
+  postVenta(venta: IVenta): Observable<IVenta> {
+    return this.http.post<IVenta>(this.apiVentas, venta, this.httpOptions())
+      .pipe( catchError(this.handleError) );
+  }
+
+  putVenta(id: number, venta: IVenta) {
+    return this.http.put<IVenta>(this.apiVentas + id, venta, this.httpOptions())
+      .pipe( catchError(this.handleError) );
+  }
+
+  deleteVenta(id: number) {
+    return this.http.delete(this.apiVentas + id, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 

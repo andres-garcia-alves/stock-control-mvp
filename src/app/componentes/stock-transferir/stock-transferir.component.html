@@ -11,10 +11,10 @@
         <ul class="list-group">
           <li class="list-group-item list-group-item-dark">
             <div class="gridCell floatLeft">
-              <input type="text" class="gridCell input-group-btn" [(ngModel)]="filtroProducto" (keyup)="filter()" placeholder="Producto" name="filtroProducto">
+              <input type="text" class="gridCell input-group-btn" [(ngModel)]="filtroProducto" (keyup)="filter()" placeholder="Filtrar Producto" name="filtroProducto">
             </div>
             <div class="gridCell floatLeft">
-              <input type="text" class="gridCell" [(ngModel)]="filtroLocal" (keyup)="filter()" placeholder="Local" name="filtroLocal">
+              <input type="text" class="gridCell" [(ngModel)]="filtroLocal" (keyup)="filter()" placeholder="Filtrar Local" name="filtroLocal">
             </div>
             <div class="gridCell floatLeft textRight">Cantidad</div>
           </li>
@@ -39,7 +39,7 @@
             <div class="form-group">
               <select id="destino" class="form-control mt-3" formControlName="destino" placeholder="Destino">
                 <option Value="0">** Elegir Local **</option>
-                <option [(ngValue)]="local.id" *ngFor="let local of locales">
+                <option *ngFor="let local of locales" [(ngValue)]="local.id">
                   {{ local.nombre }}
                 </option>
               </select>

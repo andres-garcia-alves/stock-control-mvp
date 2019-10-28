@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
-import { PlainStock } from 'src/app/entidades';
+import { PlainStock, Stock } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
-import { HttpBackend } from '@angular/common/http';
 
 @Component({
   selector: 'app-stock-actualizar',
@@ -26,7 +25,7 @@ export class StockActualizarComponent implements OnInit {
   stockForm: FormGroup;
 
   filtroProducto = '';
-  filtroLocal = 'CABA';
+  filtroLocal = '';
   filteredStock: IPlainStock[];
 
   constructor(private accesoDatosService: AccesoDatosService) { }
@@ -78,7 +77,7 @@ export class StockActualizarComponent implements OnInit {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStock()
+        this.accesoDatosService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildStockFromResponse(response3);
@@ -94,10 +93,10 @@ export class StockActualizarComponent implements OnInit {
 
       const aux = new PlainStock();
       aux.id = i + 1;
-      aux.localId = response[i].localId;
-      aux.localNombre = this.locales.find(x => x.id === response[i].localId).nombre;
-      aux.productoId = response[i].productoId;
-      aux.productoNombre = this.productos.find(x => x.id === response[i].productoId).nombre;
+      aux.localId = response[i].tienda;
+      aux.localNombre = this.locales.find(x => x.id === response[i].tienda).nombre;
+      aux.productoId = response[i].producto;
+      aux.productoNombre = this.productos.find(x => x.id === response[i].producto).nombre;
       aux.cantidad = response[i].cantidad;
 
       this.plainStock.push(aux);
@@ -165,33 +164,27 @@ export class StockActualizarComponent implements OnInit {
     if (this.formValidation() === false) { return; }
     this.loading = true;
 
+    const stock = new Stock(this.seleccionado);
+
     if (this.seleccionado.id === 0) { // nuevo
 
-      console.log('CREATE', this.seleccionado);
-      const aux: IPlainStock = this.seleccionado;
-
-      this.accesoDatosService.postStock(this.seleccionado)
+      console.log('CREATE', stock);
+      this.accesoDatosService.postStock(stock)
       .subscribe(response => {
         console.log('postStock()', response);
-
-        // CONTINUAR ACA !!!
-        // - Actualizar con el ID recibido desde Backend
-        // - Ensamblar objeto Stock para el backend (renombrar actual Stock -> PlainStock ??)
-
-        this.seleccionado.id = response.id; // Math.max.apply(Math, this.stock.map(x => x.id)) + 1;
-        // aux.id = Math.max.apply(Math, this.stock.map(x => x.id)) + 1;
+        this.seleccionado.id = Math.max.apply(Math, this.plainStock.map(x => x.id)) + 1;
         this.plainStock.push(this.seleccionado);
-        this.unselect(); // this.filter();
+        this.unselect();
         this.loading = false;
       });
 
     } else { // update
 
-      console.log('UPDATE', this.seleccionado);
-      this.accesoDatosService.putStock(this.seleccionado)
+      console.log('UPDATE', stock);
+      this.accesoDatosService.putStock(999, stock) // TODO: ver dsp del arreglo
       .subscribe(response => {
         console.log('putStock()', response);
-        this.unselect(); // this.filter();
+        this.unselect();
         this.loading = false;
       });
     }
@@ -202,7 +195,10 @@ export class StockActualizarComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
+    const stock = new Stock(this.seleccionado);
+
     console.log('DELETE', this.seleccionado);
+    // this.accesoDatosService.deleteStock(stock.id) // TODO: ver dsp del arreglo
     this.accesoDatosService.deleteStock(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteStock()', response);
