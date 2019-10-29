@@ -25,19 +25,25 @@ export class MaestroUsuariosComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.usuarios = [ // TODO: comentar
-      { id: 1, nombre: 'Bonomini, Guido' },
-      { id: 2, nombre: 'Debole, Nancy' },
-      { id: 3, nombre: 'Garcia Alves, Andrés' },
-      { id: 4, nombre: 'Salvarrey, Ignacio' },
-      { id: 5, nombre: 'Tanaro, Maria' },
-      { id: 6, nombre: 'Turreiro Manzini, Ignacio' }
-    ];
+    /*this.usuarios = [
+      { id: 1, username: 'Bonomini, Guido', first_name: 'Guido', last_name: 'Bonomini', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+      { id: 2, username: 'Debole, Nancy', first_name: 'Nancy', last_name: 'Debole', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+      { id: 3, username: 'Garcia Alves, Andrés', first_name: 'Andrés', last_name: 'Garcia Alves', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+      { id: 4, username: 'Salvarrey, Ignacio', first_name: 'Ignacio', last_name: 'Salvarrey', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+      { id: 5, username: 'Tanaro, Maria', first_name: 'Maria', last_name: 'Tanaro', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+      { id: 6, username: 'Turreiro Manzini, Ignacio', first_name: 'Ignacio', last_name: 'Turreiro Manzini', email: 'abc@gmail.com',
+      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+    ];*/
 
     this.accesoDatosService.getUsuarios()
     .subscribe(response => {
       console.log('getUsuarios()', response);
-      // this.usuarios = response; // TODO: update desde back-end
+      this.usuarios = response;
       this.loading = false;
     });
   }
@@ -102,12 +108,20 @@ export class MaestroUsuariosComponent implements OnInit {
 
     this.validaciones = '';
 
-    if (this.seleccionado.nombre === '') {
+    if (this.seleccionado.username === '') {
       this.validaciones += 'Falta completar el nombre.\n';
     }
 
-    if (this.seleccionado.nombre.length > 30) {
-      this.validaciones += 'La longitud máxima del texto es 30 carácteres.\n';
+    if (this.seleccionado.username === '') {
+      this.validaciones += 'Falta completar el nombre.\n';
+    }
+
+    if (this.seleccionado.username === '') {
+      this.validaciones += 'Falta completar el nombre.\n';
+    }
+
+    if (this.seleccionado.username === '') {
+      this.validaciones += 'Falta completar el nombre.\n';
     }
 
     return (this.validaciones === '') ? true : false;

@@ -89,10 +89,10 @@ export class StockActualizarComponent implements OnInit {
   }
 
   buildStockFromResponse(response: IStock[]) {
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < response.length; i++) {
-
       const aux = new PlainStock();
-      aux.id = i + 1;
+      aux.id = response[i].id;
       aux.localId = response[i].tienda;
       aux.localNombre = this.locales.find(x => x.id === response[i].tienda).nombre;
       aux.productoId = response[i].producto;
@@ -181,7 +181,7 @@ export class StockActualizarComponent implements OnInit {
     } else { // update
 
       console.log('UPDATE', stock);
-      this.accesoDatosService.putStock(999, stock) // TODO: ver dsp del arreglo
+      this.accesoDatosService.putStock(stock)
       .subscribe(response => {
         console.log('putStock()', response);
         this.unselect();
@@ -195,10 +195,7 @@ export class StockActualizarComponent implements OnInit {
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
-    const stock = new Stock(this.seleccionado);
-
     console.log('DELETE', this.seleccionado);
-    // this.accesoDatosService.deleteStock(stock.id) // TODO: ver dsp del arreglo
     this.accesoDatosService.deleteStock(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteStock()', response);

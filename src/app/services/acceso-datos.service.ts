@@ -14,18 +14,19 @@ export class AccesoDatosService {
   // TODO: update con URL del back-end real
   // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/r2d2/'; // fake db
   // urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo server
-  urlBase = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
+  urlModuloStock = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
+  urlModuloUsers = 'https://ingenieria2stock.herokuapp.com/users/api/v1/';
 
-  apiLogin = this.urlBase + 'login/';
-  apiLocales = this.urlBase + 'tiendas/';
-  apiProductos = this.urlBase + 'productos/';
-  apiProveedores = this.urlBase + 'proveedores/';
-  apiUsuarios = this.urlBase + 'users/';
+  apiLogin = this.urlModuloStock + 'login/';
+  apiLocales = this.urlModuloStock + 'tiendas/';
+  apiProductos = this.urlModuloStock + 'productos/';
+  apiProveedores = this.urlModuloStock + 'proveedores/';
+  apiUsuarios = this.urlModuloUsers + 'users/';
 
-  apiStock = this.urlBase + 'stock/';
-  apiVentas = this.urlBase + 'ventas/';
-  apiBajaStock = this.urlBase + 'baja-stock/';
-  apiTransferirStock = this.urlBase + 'transferir-stock/';
+  apiStock = this.urlModuloStock + 'stock/';
+  apiVentas = this.urlModuloStock + 'ventas/';
+  apiBajaStock = this.urlModuloStock + 'baja-stock/';
+  apiTransferirStock = this.urlModuloStock + 'transferir-stock/';
 
   constructor(private http: HttpClient) { }
 
@@ -145,8 +146,8 @@ export class AccesoDatosService {
       .pipe( catchError(this.handleError) );
   }
 
-  putStock(id: number, stock: IStock) {
-    return this.http.put<IStock>(this.apiStock + id, stock, this.httpOptions())
+  putStock(stock: IStock) {
+    return this.http.put<IStock>(this.apiStock + stock.id, stock, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 

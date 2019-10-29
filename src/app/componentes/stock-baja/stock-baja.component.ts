@@ -68,10 +68,10 @@ export class StockBajaComponent implements OnInit {
   }
 
   buildStockFromResponse(response: IStock[]) {
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < response.length; i++) {
-
       const aux = new PlainStock();
-      aux.id = i + 1;
+      aux.id = response[i].id;
       aux.localId = response[i].tienda;
       aux.localNombre = this.locales.find(x => x.id === response[i].tienda).nombre;
       aux.productoId = response[i].producto;
@@ -106,29 +106,16 @@ export class StockBajaComponent implements OnInit {
     if (confirm('Está seguro que desea generar la baja?') === false ) { return; }
     this.loading = true;
 
-    /*const bajaStock = new BajaStock();
-    bajaStock.id = this.seleccionado.id;
-    bajaStock.motivo = this.stockForm.controls.motivo.value;
-    bajaStock.cantidad = this.stockForm.controls.cantidad.value;*/
-
-    const stock = new Stock(this.seleccionado); // TODO: ver dsp del arreglo
+    const stock = new Stock(this.seleccionado);
     stock.cantidad -= this.stockForm.controls.cantidad.value;
 
-    this.accesoDatosService.putStock(999, stock)
+    this.accesoDatosService.putStock(stock)
     .subscribe(response => {
       console.log('putStock()', response);
       this.seleccionado.cantidad = response.cantidad;
       this.unselect();
       this.loading = false;
     });
-
-    /*this.accesoDatosService.postBajaStock(bajaStock)
-    .subscribe(response => {
-      console.log('postBajaStock()', response);
-      this.seleccionado.cantidad = response.cantidad;
-      this.unselect();
-      this.loading = false;
-    });*/
   }
 
   formValidation(): boolean {
