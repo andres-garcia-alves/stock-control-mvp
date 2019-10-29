@@ -20,6 +20,14 @@ body {
     text-align: right;
 }
 
+input#is_active {
+    width: auto;
+}
+
+input#is_active:focus{
+    box-shadow:none;
+}
+
 .floatLeft {
     float: left;
     margin-right: 5px;

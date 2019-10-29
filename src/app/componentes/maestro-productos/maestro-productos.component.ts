@@ -76,6 +76,7 @@ export class MaestroProductosComponent implements OnInit {
       this.accesoDatosService.putProducto(this.seleccionado)
       .subscribe(response => {
         console.log('putProducto()', response);
+        this.seleccionado = new Producto();
         this.loading = false;
       });
     }

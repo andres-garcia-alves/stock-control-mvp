@@ -73,6 +73,7 @@ export class MaestroLocalesComponent implements OnInit {
       this.accesoDatosService.putLocal(this.seleccionado)
       .subscribe(response => {
         console.log('putLocal()', response);
+        this.seleccionado = new Local();
         this.loading = false;
       });
     }

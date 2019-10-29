@@ -9,11 +9,11 @@ export class Usuario implements IUsuario {
     last_name = '';
     email = '';
     // tslint:disable-next-line:variable-name
-    // is_active = null;
+    is_active = true;
     // tslint:disable-next-line:variable-name
-    // ate_joined = null;
+    // date_joined = new Date();
     // tslint:disable-next-line:variable-name
-    // last_login = null;
+    // last_login = new Date();
 
     constructor(usuario?: IUsuario) {
         if (usuario) {
@@ -22,7 +22,7 @@ export class Usuario implements IUsuario {
             this.first_name = usuario.first_name;
             this.last_name = usuario.last_name;
             this.email = usuario.email;
-            // this.is_active = usuario.is_active;
+            this.is_active = usuario.is_active;
             // this.date_joined = usuario.date_joined;
             // this.last_login = usuario.last_login;
         }

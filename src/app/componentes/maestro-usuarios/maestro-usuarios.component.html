@@ -12,7 +12,7 @@
         *ngFor="let usuario of usuarios" (click)="select(usuario)"
         [class.active] = "usuario.id == seleccionado.id">
           <span class="badge badge-primary">{{ usuario.id }}</span>
-          {{ usuario.username }} - ({{ usuario.last_name }}, {{ usuario.first_name }})
+          {{ usuario.username }} ({{ usuario.last_name }}, {{ usuario.first_name }})
         </li>
       </ul>
 
@@ -22,14 +22,20 @@
             Editar...
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" [(ngModel)]="seleccionado.username" placeholder="Usuario" name="username" maxlength="150" required>
-            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.first_name" placeholder="Nombre" name="first_name" maxlength="30" required>
-            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.last_name" placeholder="Apellido" name="last_name" maxlength="150" required>
-            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.email" placeholder="Email" name="email" maxlength="254">
-            <!--<input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.is_active" placeholder="Usuario Activo?" name="is_active">
-            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.date_joined" placeholder="Fecha de Alta" name="date_joined" readonly>
-            <input type="text" class="form-control mt-3" [(ngModel)]="seleccionado.last_login" placeholder="Ultimo Login" name="emalast_loginil" readonly>-->
+            <input id="username" name="username" type="text" class="form-control" [(ngModel)]="seleccionado.username" placeholder="Usuario" maxlength="150" required>
+            <input id="first_name" name="first_name" type="text" class="form-control mt-3" [(ngModel)]="seleccionado.first_name" placeholder="Nombre" maxlength="30" required>
+            <input id="last_name" name="last_name" type="text" class="form-control mt-3" [(ngModel)]="seleccionado.last_name" placeholder="Apellido" maxlength="150" required>
+            <input id="email" name="email" type="email" class="form-control mt-3" [(ngModel)]="seleccionado.email" placeholder="Email" maxlength="254">
+            <div class="mt-3">
+              <div style="float: left; margin-left: 12px; margin-top: 6px;">Usuario Activo?</div>
+              <div class="col-sm-8" style="float: left;">
+                <input id="is_active" name="is_active" type="checkbox" class="form-control" [(ngModel)]="seleccionado.is_active" placeholder="Usuario Activo?" checked>
+              </div>
+            </div>
+            <div class="clear" style="margin-left: 12px;">Tip: puede deshabilitar usuarios en lugar de eliminarlos.</div>
           </div>
+          <!--<input id="date_joined" name="date_joined" type="text" class="form-control mt-3" [(ngModel)]="seleccionado.date_joined" placeholder="Fecha de Alta" readonly>
+          <input id="last_login" name="last_login" type="text" class="form-control mt-3" [(ngModel)]="seleccionado.last_login" placeholder="Ultimo Login" readonly>-->
           <button class="btn btn-primary" (click)="addOrEdit()">{{ seleccionado.id === 0 ? 'Crear Nuevo' : 'Modificar' }}</button>
           <button class="btn btn-secondary ml-3 mr-5" *ngIf="seleccionado.id !== 0" (click)="unselect()">Cancelar</button>
           <button class="btn btn-danger ml-5" *ngIf="seleccionado.id !== 0" (click)="delete()">Eliminar</button>

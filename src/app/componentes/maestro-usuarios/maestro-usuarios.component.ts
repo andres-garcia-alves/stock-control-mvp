@@ -27,17 +27,17 @@ export class MaestroUsuariosComponent implements OnInit {
 
     /*this.usuarios = [
       { id: 1, username: 'Bonomini, Guido', first_name: 'Guido', last_name: 'Bonomini', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
       { id: 2, username: 'Debole, Nancy', first_name: 'Nancy', last_name: 'Debole', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
       { id: 3, username: 'Garcia Alves, Andrés', first_name: 'Andrés', last_name: 'Garcia Alves', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
       { id: 4, username: 'Salvarrey, Ignacio', first_name: 'Ignacio', last_name: 'Salvarrey', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
       { id: 5, username: 'Tanaro, Maria', first_name: 'Maria', last_name: 'Tanaro', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
       { id: 6, username: 'Turreiro Manzini, Ignacio', first_name: 'Ignacio', last_name: 'Turreiro Manzini', email: 'abc@gmail.com',
-      is_active: true, date_joined: Date.now(), last_login: Date.now() },
+        is_active: true, date_joined: Date.now(), last_login: Date.now() },
     ];*/
 
     this.accesoDatosService.getUsuarios()
@@ -65,12 +65,14 @@ export class MaestroUsuariosComponent implements OnInit {
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
+      // this.seleccionado.date_joined = new Date();
+      // this.seleccionado.last_login = new Date();
 
       console.log('CREATE', this.seleccionado);
       this.accesoDatosService.postUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('postUsuario()', response);
-        this.seleccionado.id = response.id; // Math.max.apply(Math, this.usuarios.map(x => x.id)) + 1;
+        this.seleccionado.id = response.id;
         this.usuarios.push(this.seleccionado);
         this.seleccionado = new Usuario();
         this.loading = false;
@@ -82,7 +84,7 @@ export class MaestroUsuariosComponent implements OnInit {
       this.accesoDatosService.putUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('putUsuario()', response);
-        console.log(response);
+        this.seleccionado = new Usuario();
         this.loading = false;
       });
     }
@@ -109,19 +111,19 @@ export class MaestroUsuariosComponent implements OnInit {
     this.validaciones = '';
 
     if (this.seleccionado.username === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+      this.validaciones += 'Falta completar el nombre de usuario.\n';
     }
 
-    if (this.seleccionado.username === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+    if (this.seleccionado.first_name === '') {
+      this.validaciones += 'Falta completar el nombre de pila.\n';
     }
 
-    if (this.seleccionado.username === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+    if (this.seleccionado.last_name === '') {
+      this.validaciones += 'Falta completar el apellido.\n';
     }
 
-    if (this.seleccionado.username === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+    if (this.seleccionado.email !== '' && this.seleccionado.email.includes('@') === false) {
+      this.validaciones += 'Email inválido.\n';
     }
 
     return (this.validaciones === '') ? true : false;

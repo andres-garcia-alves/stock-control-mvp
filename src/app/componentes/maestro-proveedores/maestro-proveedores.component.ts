@@ -76,6 +76,7 @@ export class MaestroProveedoresComponent implements OnInit {
       this.accesoDatosService.putProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('putProveedor()', response);
+        this.seleccionado = new Proveedor();
         this.loading = false;
       });
     }
