@@ -14,8 +14,10 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private accesoDatosService: AccesoDatosService) { }
 
   debug: any;
-  login: ILogin;
+  loading: boolean;
   validaciones: string;
+
+  login: ILogin;
 
   registroForm = new FormGroup({
     nuevaContraseña: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
