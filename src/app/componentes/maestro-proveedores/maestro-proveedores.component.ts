@@ -68,6 +68,9 @@ export class MaestroProveedoresComponent implements OnInit {
         this.proveedores.push(this.seleccionado);
         this.seleccionado = new Proveedor();
         this.loading = false;
+      }, error => {
+        this.validaciones = error;
+        this.loading = false;
       });
 
     } else { // update
@@ -77,6 +80,9 @@ export class MaestroProveedoresComponent implements OnInit {
       .subscribe(response => {
         console.log('putProveedor()', response);
         this.seleccionado = new Proveedor();
+        this.loading = false;
+      }, error => {
+        this.validaciones = error;
         this.loading = false;
       });
     }
@@ -91,11 +97,13 @@ export class MaestroProveedoresComponent implements OnInit {
     this.accesoDatosService.deleteProveedor(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProveedor()', response);
+      this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
+      this.seleccionado = new Proveedor();
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
       this.loading = false;
     });
-
-    this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
-    this.seleccionado = new Proveedor();
   }
 
   formValidations(): boolean {

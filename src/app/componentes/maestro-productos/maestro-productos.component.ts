@@ -68,6 +68,9 @@ export class MaestroProductosComponent implements OnInit {
         this.productos.push(this.seleccionado);
         this.seleccionado = new Producto();
         this.loading = false;
+      }, error => {
+        this.validaciones = error;
+        this.loading = false;
       });
 
     } else { // update
@@ -77,6 +80,9 @@ export class MaestroProductosComponent implements OnInit {
       .subscribe(response => {
         console.log('putProducto()', response);
         this.seleccionado = new Producto();
+        this.loading = false;
+      }, error => {
+        this.validaciones = error;
         this.loading = false;
       });
     }
@@ -91,11 +97,13 @@ export class MaestroProductosComponent implements OnInit {
     this.accesoDatosService.deleteProducto(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProducto()', response);
+      this.productos = this.productos.filter(x => x !== this.seleccionado);
+      this.seleccionado = new Producto();
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
       this.loading = false;
     });
-
-    this.productos = this.productos.filter(x => x !== this.seleccionado);
-    this.seleccionado = new Producto();
   }
 
   formValidations(): boolean {

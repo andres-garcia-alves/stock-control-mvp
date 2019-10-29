@@ -176,6 +176,9 @@ export class StockActualizarComponent implements OnInit {
         this.plainStock.push(this.seleccionado);
         this.unselect();
         this.loading = false;
+      }, error => {
+        this.validaciones = error;
+        this.loading = false;
       });
 
     } else { // update
@@ -185,6 +188,9 @@ export class StockActualizarComponent implements OnInit {
       .subscribe(response => {
         console.log('putStock()', response);
         this.unselect();
+        this.loading = false;
+      }, error => {
+        this.validaciones = error;
         this.loading = false;
       });
     }
@@ -199,13 +205,14 @@ export class StockActualizarComponent implements OnInit {
     this.accesoDatosService.deleteStock(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteStock()', response);
+      this.plainStock = this.plainStock.filter(x => x !== this.seleccionado);
+      this.filter();
+      this.unselect();
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
       this.loading = false;
     });
-
-    this.plainStock = this.plainStock.filter(x => x !== this.seleccionado);
-
-    this.filter();
-    this.unselect();
   }
 
   formValidation(): boolean {

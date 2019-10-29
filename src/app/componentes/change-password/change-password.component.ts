@@ -15,18 +15,20 @@ export class ChangePasswordComponent implements OnInit {
 
   debug: any;
   login: ILogin;
-  mensaje = 'Mínimo 4 caracteres.';
+  validaciones: string;
 
   registroForm = new FormGroup({
     nuevaContraseña: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     repetirContraseña: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)])
   });
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.validaciones = 'Mínimo 4 caracteres.';
+  }
 
   onSubmit() {
     if (this.registroForm.value.nuevaContraseña !== this.registroForm.value.repetirContraseña) {
-      this.mensaje = 'Las contraseñas no coinciden.';
+      this.validaciones = 'Las contraseñas no coinciden.';
       return;
     }
 

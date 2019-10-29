@@ -222,7 +222,8 @@ export class AccesoDatosService {
     if (error.error instanceof ErrorEvent) {
       console.error('Ocurrió un error: ', error.error.message);
     } else {
-      console.error(`El backend retornó el código ${error.status}, Descripción: ${error.message}.`);
+      console.error(`El back-end retornó el código ${error.status}`);
+      console.error(`Descripción: ${error.message}.`);
     }
     return throwError('Fallo en el sistema; por favor intente más tarde.');
   }

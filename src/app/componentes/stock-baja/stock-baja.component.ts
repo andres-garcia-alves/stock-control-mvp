@@ -115,6 +115,9 @@ export class StockBajaComponent implements OnInit {
       this.seleccionado.cantidad = response.cantidad;
       this.unselect();
       this.loading = false;
+    }, error => {
+      this.validaciones = error;
+      this.loading = false;
     });
   }
 

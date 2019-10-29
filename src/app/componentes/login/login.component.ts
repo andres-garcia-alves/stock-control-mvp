@@ -15,8 +15,10 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private accesoDatosService: AccesoDatosService) { }
 
   debug: any;
+  loading: boolean;
+  validaciones: string;
+
   login: ILogin;
-  mensaje: string = null;
 
   registroForm = new FormGroup({
     usuario: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
@@ -26,20 +28,23 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   onSubmit() {
-    this.mensaje = null;
+    this.validaciones = null;
 
     this.login = {
       usuario: this.registroForm.value.usuario,
       password: this.registroForm.value.contraseña
     };
 
-    /*this.accesoDatosService.postLogin(this.login)
+    this.accesoDatosService.postLogin(this.login)
     .subscribe(response => {
       console.log('postLogin()', response);
-      if (result !== '' && result !== null) {
-      sessionStorage.setItem('token', result); // TODO: descomentar
+      if (response !== '' && response !== null) {
+      sessionStorage.setItem('token', response); // TODO: descomentar
       }
-    });*/
+    }, error => {
+      this.validaciones = error;
+      this.loading = false;
+    });
 
     // TODO: comentar esta sección
     if (this.login.usuario.toLowerCase() === 'admin' && this.login.password.toLowerCase() === '1234') {
@@ -47,7 +52,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem('token', 'aqui-va-a-ir-el-token-de-autorizacion');
       this.router.navigate(['/home']);
     } else {
-      this.mensaje = 'Usuario y/o contraseña incorrectos.';
+      this.validaciones = 'Usuario y/o contraseña incorrectos.';
     }
   }
 }

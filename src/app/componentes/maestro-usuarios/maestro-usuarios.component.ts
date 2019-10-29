@@ -76,6 +76,9 @@ export class MaestroUsuariosComponent implements OnInit {
         this.usuarios.push(this.seleccionado);
         this.seleccionado = new Usuario();
         this.loading = false;
+      }, error => {
+        this.validaciones = error;
+        this.loading = false;
       });
 
     } else { // update
@@ -85,6 +88,9 @@ export class MaestroUsuariosComponent implements OnInit {
       .subscribe(response => {
         console.log('putUsuario()', response);
         this.seleccionado = new Usuario();
+        this.loading = false;
+      }, error => {
+        this.validaciones = error;
         this.loading = false;
       });
     }
@@ -99,11 +105,13 @@ export class MaestroUsuariosComponent implements OnInit {
     this.accesoDatosService.deleteUsuario(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteUsuario()', response);
+      this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
+      this.seleccionado = new Usuario();
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
       this.loading = false;
     });
-
-    this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
-    this.seleccionado = new Usuario();
   }
 
   formValidations(): boolean {

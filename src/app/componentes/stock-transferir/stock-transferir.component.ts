@@ -113,6 +113,7 @@ export class StockTransferirComponent implements OnInit {
     if (this.formValidation() === false) { return; }
     this.loading = true;
 
+    // para el POST
     const transferirStock = new TransferirStock();
     transferirStock.productoId = this.seleccionado.id;
     transferirStock.localOrigenId = this.seleccionado.localId;
@@ -120,13 +121,7 @@ export class StockTransferirComponent implements OnInit {
     transferirStock.cantidad = this.stockForm.controls.cantidad.value;
     console.log('TransferirStock', transferirStock);
 
-    this.accesoDatosService.postTransferirStock(transferirStock)
-    .subscribe(response => {
-      console.log('postTransferirStock()', response);
-      this.loading = false;
-    });
-
-    // actualizar UI
+    // por si hay que actualizar la UI
     const newStock = new PlainStock();
     newStock.id = Math.max.apply(Math, this.plainStock.map(x => x.id)) + 1;
     newStock.localId = this.stockForm.controls.destino.value;
@@ -135,13 +130,20 @@ export class StockTransferirComponent implements OnInit {
     newStock.productoNombre = this.seleccionado.productoNombre;
     newStock.cantidad = this.stockForm.controls.cantidad.value;
 
-    this.seleccionado.cantidad -= transferirStock.cantidad;
+    this.accesoDatosService.postTransferirStock(transferirStock)
+    .subscribe(response => {
+      console.log('postTransferirStock()', response);
+      this.seleccionado.cantidad -= transferirStock.cantidad;
+      const existe = this.plainStock.find(x => x.productoId === newStock.productoId && x.localId === newStock.localId);
+      if (existe) { existe.cantidad += newStock.cantidad; } else { this.plainStock.push(newStock); }
 
-    const existe = this.plainStock.find(x => x.productoId === newStock.productoId && x.localId === newStock.localId);
-    if (existe) { existe.cantidad += newStock.cantidad; } else { this.plainStock.push(newStock); }
-
-    this.filter();
-    this.unselect();
+      this.filter();
+      this.unselect();
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
+      this.loading = false;
+    });
   }
 
   formValidation(): boolean {
