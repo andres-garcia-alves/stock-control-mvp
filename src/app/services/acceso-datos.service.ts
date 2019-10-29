@@ -17,10 +17,10 @@ export class AccesoDatosService {
   urlBase = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
 
   apiLogin = this.urlBase + 'login/';
-  apiLocales = this.urlBase + 'tiendas/'; // 'locales/';
+  apiLocales = this.urlBase + 'tiendas/';
   apiProductos = this.urlBase + 'productos/';
   apiProveedores = this.urlBase + 'proveedores/';
-  apiUsuarios = this.urlBase + 'usuarios/';
+  apiUsuarios = this.urlBase + 'users/';
 
   apiStock = this.urlBase + 'stock/';
   apiVentas = this.urlBase + 'ventas/';

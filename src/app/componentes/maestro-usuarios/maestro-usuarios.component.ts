@@ -34,12 +34,12 @@ export class MaestroUsuariosComponent implements OnInit {
       { id: 6, nombre: 'Turreiro Manzini, Ignacio' }
     ];
 
-    /*this.accesoDatosService.getUsuarios()
+    this.accesoDatosService.getUsuarios()
     .subscribe(response => {
       console.log('getUsuarios()', response);
       // this.usuarios = response; // TODO: update desde back-end
       this.loading = false;
-    });*/
+    });
   }
 
   select(usuario: IUsuario) {
