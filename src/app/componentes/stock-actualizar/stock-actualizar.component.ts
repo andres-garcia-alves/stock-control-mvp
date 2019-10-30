@@ -80,7 +80,7 @@ export class StockActualizarComponent implements OnInit {
         this.accesoDatosService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
-          this.buildStockFromResponse(response3);
+          this.buildPlainStockFromResponse(response3);
           this.loading = false;
           this.filter();
         });
@@ -88,7 +88,7 @@ export class StockActualizarComponent implements OnInit {
     });
   }
 
-  buildStockFromResponse(response: IStock[]) {
+  buildPlainStockFromResponse(response: IStock[]) {
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < response.length; i++) {
       const aux = new PlainStock();
@@ -104,13 +104,13 @@ export class StockActualizarComponent implements OnInit {
     }
   }
 
-  select(stock: IPlainStock) {
-    this.seleccionado = stock;
-    this.seleccionadoBackup = new PlainStock(stock);
+  select(plainStock: IPlainStock) {
+    this.seleccionado = plainStock;
+    this.seleccionadoBackup = new PlainStock(plainStock);
 
     this.stockForm.controls.selectProductos.disable();
     this.stockForm.controls.selectLocales.disable();
-    this.stockForm.controls.inputCantidad.setValue(stock.cantidad);
+    this.stockForm.controls.inputCantidad.setValue(plainStock.cantidad);
   }
 
   unselect() {

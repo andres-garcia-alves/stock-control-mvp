@@ -56,7 +56,7 @@ export class StockBajaComponent implements OnInit {
         this.accesoDatosService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
-          this.buildStockFromResponse(response3);
+          this.buildPlainStockFromResponse(response3);
           this.loading = false;
           this.filter();
         });
@@ -67,7 +67,7 @@ export class StockBajaComponent implements OnInit {
     this.stockForm.controls.motivo.setValue(0);
   }
 
-  buildStockFromResponse(response: IStock[]) {
+  buildPlainStockFromResponse(response: IStock[]) {
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < response.length; i++) {
       const aux = new PlainStock();
@@ -83,8 +83,8 @@ export class StockBajaComponent implements OnInit {
     }
   }
 
-  select(stock: IPlainStock) {
-    this.seleccionado = stock;
+  select(plainStock: IPlainStock) {
+    this.seleccionado = plainStock;
   }
 
   unselect() {
