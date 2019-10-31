@@ -11,32 +11,33 @@ import { IStock, IVenta, IBajaStock, ITransferirStock } from '../interfaces/inde
 })
 export class AccesoDatosService {
 
-  // TODO: update con URL del back-end real
   // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/r2d2/'; // fake db
   // urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo server
   urlModuloStock = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
   urlModuloUsers = 'https://ingenieria2stock.herokuapp.com/users/api/v1/';
+  urlModuloLogin = 'https://ingenieria2stock.herokuapp.com/api-token-auth/';
 
-  apiLogin = this.urlModuloStock + 'login/';
+  apiLogin = this.urlModuloLogin;
+  apiUsuarios = this.urlModuloUsers + 'users/';
+
   apiLocales = this.urlModuloStock + 'tiendas/';
   apiProductos = this.urlModuloStock + 'productos/';
   apiProveedores = this.urlModuloStock + 'proveedores/';
-  apiUsuarios = this.urlModuloUsers + 'users/';
-
   apiStock = this.urlModuloStock + 'stock/';
   apiVentas = this.urlModuloStock + 'ventas/';
   apiBajaStock = this.urlModuloStock + 'baja-stock/';
   apiTransferirStock = this.urlModuloStock + 'transferir-stock/';
 
+
   constructor(private http: HttpClient) { }
 
   postLogin(login: ILogin) {
-    return this.http.post<string>(this.apiLogin, login, this.httpOptions())
+    return this.http.post<any>(this.apiLogin, login)
     .pipe( catchError(this.handleError) );
   }
 
   putLogin(login: ILogin) {
-    return this.http.put<ILogin>(this.apiLogin, login, this.httpOptions())
+    return this.http.put<any>(this.apiLogin, login, this.httpOptions())
       .pipe( catchError(this.handleError) );
   }
 
@@ -192,7 +193,6 @@ export class AccesoDatosService {
       .pipe( catchError(this.handleError) );
   }
 
-
   httpOptions(observeResponse: boolean = false) {
     const token = (sessionStorage.getItem('token') != null) ? sessionStorage.getItem('token') : '';
 
@@ -201,7 +201,7 @@ export class AccesoDatosService {
         headers : new HttpHeaders({
           'Content-Type': 'application/json',
           // tslint:disable-next-line:object-literal-key-quotes
-          'Authorization': token
+          'authorization': 'Token ' + token
         })
       };
     }
@@ -211,7 +211,7 @@ export class AccesoDatosService {
         headers : new HttpHeaders({
           'Content-Type': 'application/json',
           // tslint:disable-next-line:object-literal-key-quotes
-          'Authorization': token
+          'authorization': 'Token ' + token
         }),
         observe : 'response' as 'body'
       };

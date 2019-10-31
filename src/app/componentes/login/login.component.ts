@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILogin } from 'src/app/interfaces';
+import { Login } from 'src/app/entidades';
 import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 
 @Component({
@@ -18,8 +19,6 @@ export class LoginComponent implements OnInit {
   loading: boolean;
   validaciones: string;
 
-  login: ILogin;
-
   registroForm = new FormGroup({
     usuario: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     contraseña: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)])
@@ -30,29 +29,26 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.validaciones = null;
 
-    this.login = {
-      usuario: this.registroForm.value.usuario,
-      password: this.registroForm.value.contraseña
-    };
+    const login = new Login();
+    login.username = this.registroForm.value.usuario.toLowerCase();
+    login.password = this.registroForm.value.contraseña.toLowerCase();
+    console.log('Login:', login);
 
-    this.accesoDatosService.postLogin(this.login)
+    this.accesoDatosService.postLogin(login)
     .subscribe(response => {
+
       console.log('postLogin()', response);
-      if (response !== '' && response !== null) {
-      sessionStorage.setItem('token', response); // TODO: descomentar
-      }
+      if (response === null || response === '') { return; }
+      // if (login.username.toLowerCase() !== 'admin' || login.password.toLowerCase() !== '1234') { return; }
+
+      // tslint:disable-next-line:no-string-literal
+      sessionStorage.setItem('token', response['token']);
+      sessionStorage.setItem('username', login.username);
+      this.router.navigate(['/home']);
+
     }, error => {
-      this.validaciones = error;
+      this.validaciones = 'Usuario y/o contraseña incorrectos.';
       this.loading = false;
     });
-
-    // TODO: comentar esta sección
-    if (this.login.usuario.toLowerCase() === 'admin' && this.login.password.toLowerCase() === '1234') {
-      sessionStorage.setItem('user', this.login.usuario);
-      sessionStorage.setItem('token', 'aqui-va-a-ir-el-token-de-autorizacion');
-      this.router.navigate(['/home']);
-    } else {
-      this.validaciones = 'Usuario y/o contraseña incorrectos.';
-    }
   }
 }

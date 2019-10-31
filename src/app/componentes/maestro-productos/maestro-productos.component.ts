@@ -51,6 +51,7 @@ export class MaestroProductosComponent implements OnInit {
     const index = this.productos.findIndex(x => x.id === this.seleccionadoBackup.id);
     this.productos[index] = this.seleccionadoBackup;
     this.seleccionado = new Producto();
+    this.validaciones = '';
   }
 
   addOrEdit() {

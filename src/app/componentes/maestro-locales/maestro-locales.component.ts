@@ -48,6 +48,7 @@ export class MaestroLocalesComponent implements OnInit {
     const index = this.locales.findIndex(x => x.id === this.seleccionadoBackup.id);
     this.locales[index] = this.seleccionadoBackup;
     this.seleccionado = new Local();
+    this.validaciones = '';
   }
 
   addOrEdit() {

@@ -51,6 +51,7 @@ export class MaestroProveedoresComponent implements OnInit {
     const index = this.proveedores.findIndex(x => x.id === this.seleccionadoBackup.id);
     this.proveedores[index] = this.seleccionadoBackup;
     this.seleccionado = new Proveedor();
+    this.validaciones = '';
   }
 
   addOrEdit() {

@@ -57,6 +57,7 @@ export class MaestroUsuariosComponent implements OnInit {
     const index = this.usuarios.findIndex(x => x.id === this.seleccionadoBackup.id);
     this.usuarios[index] = this.seleccionadoBackup;
     this.seleccionado = new Usuario();
+    this.validaciones = '';
   }
 
   addOrEdit() {
@@ -98,6 +99,7 @@ export class MaestroUsuariosComponent implements OnInit {
 
   delete() {
 
+    if (this.deleteValidations() === false) { return; }
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
     this.loading = true;
 
@@ -118,6 +120,10 @@ export class MaestroUsuariosComponent implements OnInit {
 
     this.validaciones = '';
 
+    if (this.seleccionado.id === 11 || this.seleccionado.username.toLowerCase() === 'admin') {
+      this.validaciones += 'El usuario ADMIN es de solo lectura.\n';
+    }
+
     if (this.seleccionado.username === '') {
       this.validaciones += 'Falta completar el nombre de usuario.\n';
     }
@@ -132,6 +138,17 @@ export class MaestroUsuariosComponent implements OnInit {
 
     if (this.seleccionado.email !== '' && this.seleccionado.email.includes('@') === false) {
       this.validaciones += 'Email inválido.\n';
+    }
+
+    return (this.validaciones === '') ? true : false;
+  }
+
+  deleteValidations(): boolean {
+
+    this.validaciones = '';
+
+    if (this.seleccionado.username.toLowerCase() === 'admin') {
+      this.validaciones += 'Ni se te ocurra eliminar el ADMIN que te quedás OUT !!\nLoko, que gente jodida ;-)\n';
     }
 
     return (this.validaciones === '') ? true : false;
