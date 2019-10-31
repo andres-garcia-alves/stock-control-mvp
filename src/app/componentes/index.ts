@@ -4,6 +4,7 @@ export * from './home/home.component';
 export * from './ventas-registrar/ventas-registrar.component';
 export * from './ventas-revertir/ventas-revertir.component';
 export * from './ventas-reserva/ventas-reserva.component';
+export * from './ventas-visualizar/ventas-visualizar.component';
 
 export * from './stock-actualizar/stock-actualizar.component';
 export * from './stock-baja/stock-baja.component';

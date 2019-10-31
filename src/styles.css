@@ -12,6 +12,11 @@ body {
     width: 30%;
 }
 
+.gridCell-4 {
+    min-width: 200px;
+    width: 23%;
+}
+
 .textLeft {
     text-align: left;
 }

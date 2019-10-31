@@ -1,0 +1,42 @@
+<br/>
+<h4>Ventas - Visualizar Ventas</h4>
+
+<br/>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-dark">
+          <div class="gridCell-4 floatLeft">
+            <input type="date" class="gridCell-4 input-group-btn" [(ngModel)]="filtroFecha" (ngModelChange)="filter()" placeholder="Filtrar Fecha" name="filtroFecha">
+          </div>
+          <div class="gridCell-4 floatLeft">
+            <input type="text" class="gridCell-4 input-group-btn" [(ngModel)]="filtroProducto" (keyup)="filter()" placeholder="Filtrar Producto" name="filtroProducto">
+          </div>
+          <div class="gridCell-4 floatLeft">
+            <input type="text" class="gridCell-4" [(ngModel)]="filtroUsuario" (keyup)="filter()" placeholder="Filtrar Usuario" name="filtroUsuario">
+          </div>
+          <div class="gridCell-4 floatLeft textRight">Cantidad</div>
+        </li>
+      </ul>        
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-action"
+        *ngFor="let item of filteredVentas" (click)="select(item)" [class.active] = "item.id == seleccionado.id">
+          <span class="badge badge-primary floatLeft">{{ item.id }}</span>
+          <div class="gridCell-4 floatLeft">{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div class="gridCell-4 floatLeft">{{ item.productoNombre }}</div>
+          <div class="gridCell-4 floatLeft">{{ item.usuarioNombre }}</div>
+          <div class="gridCell-4 floatLeft textRight">{{ item.cantidad }} unid.</div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <div *ngIf="loading">loading...</div>
+  <div *ngIf="validaciones" style="white-space: pre;">{{ validaciones }}</div>
+  <pre *ngIf="debug">debug:<br/>{{ debug | json }}</pre>
+  <br/>
+</div>

@@ -7,5 +7,7 @@ export * from './IStock';
 export * from './IVenta';
 
 export * from './IPlain-Stock';
+export * from './IPlain-Venta';
+
 export * from './IBaja-Stock';
 export * from './ITransferir-Stock';

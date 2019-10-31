@@ -8,6 +8,7 @@ import { HomeComponent } from './componentes/index';
 import { VentasRegistrarComponent } from './componentes/index';
 import { VentasRevertirComponent } from './componentes/index';
 import { VentasReservaComponent } from './componentes/index';
+import { VentasVisualizarComponent } from './componentes/index';
 
 import { StockActualizarComponent } from './componentes/index';
 import { StockBajaComponent } from './componentes/index';
@@ -33,6 +34,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [CanActivateRouteGuard]},
   {path: 'venta-resgistrar', component: VentasRegistrarComponent, canActivate: [CanActivateRouteGuard]},
   {path: 'venta-revertir', component: VentasRevertirComponent, canActivate: [CanActivateRouteGuard]},
+  {path: 'venta-visualizar', component: VentasVisualizarComponent, canActivate: [CanActivateRouteGuard]},
   {path: 'venta-reserva', component: VentasReservaComponent, canActivate: [CanActivateRouteGuard]},
   {path: 'stock-actualizar', component: StockActualizarComponent, canActivate: [CanActivateRouteGuard]},
   {path: 'stock-baja-defectuoso', component: StockBajaComponent, canActivate: [CanActivateRouteGuard]},

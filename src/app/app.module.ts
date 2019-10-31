@@ -28,6 +28,7 @@ import { ReporteVendedoresPorMontoComponent } from './componentes/reporte-vended
 import { ReporteVendedoresPorUnidComponent } from './componentes/reporte-vendedores-por-unid/reporte-vendedores-por-unid.component';
 import { AboutComponent } from './componentes/about/about.component';
 import { ChangePasswordComponent } from './componentes/change-password/change-password.component';
+import { VentasVisualizarComponent } from './componentes/ventas-visualizar/ventas-visualizar.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { ChangePasswordComponent } from './componentes/change-password/change-pa
     ReporteVendedoresPorMontoComponent,
     ReporteVendedoresPorUnidComponent,
     AboutComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    VentasVisualizarComponent
   ],
   imports: [
     BrowserModule,

@@ -52,6 +52,7 @@ export class VentasRegistrarComponent implements OnInit {
   unselect() {
     this.ventaForm.controls.selectProductos.setValue(0);
     this.ventaForm.controls.inputCantidad.setValue('');
+    this.validaciones = '';
   }
 
   add() {
@@ -60,7 +61,7 @@ export class VentasRegistrarComponent implements OnInit {
     this.loading = true;
 
     const venta = new Venta();
-    venta.usuario = 1;
+    venta.usuario = 11;
     venta.producto = this.ventaForm.controls.selectProductos.value;
     venta.cantidad = this.ventaForm.controls.inputCantidad.value;
     venta.fecha = Date.now();
@@ -69,7 +70,11 @@ export class VentasRegistrarComponent implements OnInit {
     this.accesoDatosService.postVenta(venta)
     .subscribe(response => {
       console.log('postVenta()', response);
-      this.validaciones = 'venta registarda satisfactoriamente.';
+      this.unselect();
+      this.validaciones = 'Venta registarda satisfactoriamente.';
+      this.loading = false;
+    }, error => {
+      this.validaciones = error;
       this.loading = false;
     });
   }

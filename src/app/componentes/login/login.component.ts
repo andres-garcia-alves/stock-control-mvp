@@ -27,7 +27,9 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   onSubmit() {
+
     this.validaciones = null;
+    this.loading = true;
 
     const login = new Login();
     login.username = this.registroForm.value.usuario.toLowerCase();
@@ -39,6 +41,7 @@ export class LoginComponent implements OnInit {
 
       console.log('postLogin()', response);
       if (response === null || response === '') { return; }
+      // "Token ba897b501056c54bd59ee829ab28a7bc6ff81abc"
       // if (login.username.toLowerCase() !== 'admin' || login.password.toLowerCase() !== '1234') { return; }
 
       // tslint:disable-next-line:no-string-literal
