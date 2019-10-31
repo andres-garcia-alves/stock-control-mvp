@@ -54,10 +54,14 @@ export class MaestroUsuariosComponent implements OnInit {
   }
 
   unselect() {
-    const index = this.usuarios.findIndex(x => x.id === this.seleccionadoBackup.id);
-    this.usuarios[index] = this.seleccionadoBackup;
     this.seleccionado = new Usuario();
     this.validaciones = '';
+  }
+
+  cancel() {
+    const index = this.usuarios.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.usuarios[index] = this.seleccionadoBackup;
+    this.unselect();
   }
 
   addOrEdit() {
@@ -75,7 +79,7 @@ export class MaestroUsuariosComponent implements OnInit {
         console.log('postUsuario()', response);
         this.seleccionado.id = response.id;
         this.usuarios.push(this.seleccionado);
-        this.seleccionado = new Usuario();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -88,7 +92,7 @@ export class MaestroUsuariosComponent implements OnInit {
       this.accesoDatosService.putUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('putUsuario()', response);
-        this.seleccionado = new Usuario();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -108,7 +112,7 @@ export class MaestroUsuariosComponent implements OnInit {
     .subscribe(response => {
       console.log('deleteUsuario()', response);
       this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Usuario();
+      this.unselect();
       this.loading = false;
     }, error => {
       this.validaciones = error;
@@ -136,8 +140,9 @@ export class MaestroUsuariosComponent implements OnInit {
       this.validaciones += 'Falta completar el apellido.\n';
     }
 
-    if (this.seleccionado.email !== '' && this.seleccionado.email.includes('@') === false) {
-      this.validaciones += 'Email inválido.\n';
+    const emailRegex = /^[-_\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+    if (emailRegex.test(this.seleccionado.email) === false) {
+      this.validaciones += 'El email es inválido.\n';
     }
 
     return (this.validaciones === '') ? true : false;

@@ -48,10 +48,14 @@ export class MaestroProveedoresComponent implements OnInit {
   }
 
   unselect() {
-    const index = this.proveedores.findIndex(x => x.id === this.seleccionadoBackup.id);
-    this.proveedores[index] = this.seleccionadoBackup;
     this.seleccionado = new Proveedor();
     this.validaciones = '';
+  }
+
+  cancel() {
+    const index = this.proveedores.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.proveedores[index] = this.seleccionadoBackup;
+    this.unselect();
   }
 
   addOrEdit() {
@@ -67,7 +71,7 @@ export class MaestroProveedoresComponent implements OnInit {
         console.log('postProveedor()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1;
         this.proveedores.push(this.seleccionado);
-        this.seleccionado = new Proveedor();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -80,7 +84,7 @@ export class MaestroProveedoresComponent implements OnInit {
       this.accesoDatosService.putProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('putProveedor()', response);
-        this.seleccionado = new Proveedor();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -99,7 +103,7 @@ export class MaestroProveedoresComponent implements OnInit {
     .subscribe(response => {
       console.log('deleteProveedor()', response);
       this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Proveedor();
+      this.unselect();
       this.loading = false;
     }, error => {
       this.validaciones = error;

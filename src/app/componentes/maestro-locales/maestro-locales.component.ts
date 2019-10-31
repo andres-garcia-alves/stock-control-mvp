@@ -45,10 +45,14 @@ export class MaestroLocalesComponent implements OnInit {
   }
 
   unselect() {
-    const index = this.locales.findIndex(x => x.id === this.seleccionadoBackup.id);
-    this.locales[index] = this.seleccionadoBackup;
     this.seleccionado = new Local();
     this.validaciones = '';
+  }
+
+  cancel() {
+    const index = this.locales.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.locales[index] = this.seleccionadoBackup;
+    this.unselect();
   }
 
   addOrEdit() {
@@ -64,7 +68,7 @@ export class MaestroLocalesComponent implements OnInit {
         console.log('postLocal()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.locales.map(x => x.id)) + 1;
         this.locales.push(this.seleccionado);
-        this.seleccionado = new Local();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -77,7 +81,7 @@ export class MaestroLocalesComponent implements OnInit {
       this.accesoDatosService.putLocal(this.seleccionado)
       .subscribe(response => {
         console.log('putLocal()', response);
-        this.seleccionado = new Local();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -96,7 +100,7 @@ export class MaestroLocalesComponent implements OnInit {
     .subscribe(response => {
       console.log('deleteLocal()', response);
       this.locales = this.locales.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Local();
+      this.unselect();
       this.loading = false;
     }, error => {
       this.validaciones = error;

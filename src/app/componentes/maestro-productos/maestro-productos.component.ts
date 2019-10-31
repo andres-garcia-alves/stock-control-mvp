@@ -48,10 +48,14 @@ export class MaestroProductosComponent implements OnInit {
   }
 
   unselect() {
-    const index = this.productos.findIndex(x => x.id === this.seleccionadoBackup.id);
-    this.productos[index] = this.seleccionadoBackup;
     this.seleccionado = new Producto();
     this.validaciones = '';
+  }
+
+  cancel() {
+    const index = this.productos.findIndex(x => x.id === this.seleccionadoBackup.id);
+    this.productos[index] = this.seleccionadoBackup;
+    this.unselect();
   }
 
   addOrEdit() {
@@ -67,7 +71,7 @@ export class MaestroProductosComponent implements OnInit {
         console.log('postProducto()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.productos.map(x => x.id)) + 1;
         this.productos.push(this.seleccionado);
-        this.seleccionado = new Producto();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -80,7 +84,7 @@ export class MaestroProductosComponent implements OnInit {
       this.accesoDatosService.putProducto(this.seleccionado)
       .subscribe(response => {
         console.log('putProducto()', response);
-        this.seleccionado = new Producto();
+        this.unselect();
         this.loading = false;
       }, error => {
         this.validaciones = error;
@@ -99,7 +103,7 @@ export class MaestroProductosComponent implements OnInit {
     .subscribe(response => {
       console.log('deleteProducto()', response);
       this.productos = this.productos.filter(x => x !== this.seleccionado);
-      this.seleccionado = new Producto();
+      this.unselect();
       this.loading = false;
     }, error => {
       this.validaciones = error;
