@@ -2,8 +2,6 @@
 
 A stock control software (minimum valid product) for a clothing business.
 
-Developed for subject 'Ingenieria de Software II', on CAECE University, Buenos Aires, Argentina.
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.8.
 
 ## Development server
@@ -29,3 +27,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+&nbsp;
+
+This is the first public release of this project.  
+Developed for subject 'Ingenieria de Software II', at CAECE University, Buenos Aires, Argentina.  
+
+Please send me your feedback about this project: andres.garcia.alves@gmail.com
