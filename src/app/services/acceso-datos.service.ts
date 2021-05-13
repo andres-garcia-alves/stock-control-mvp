@@ -46,7 +46,7 @@ export class AccesoDatosService {
     return this.http.get<ILocal[]>(this.apiLocales, this.httpOptions());
   }
 
-  getLocal(id: number) {
+  getLocal(id: number): Observable<ILocal> {
     return this.http.get<ILocal>(this.apiLocales + id, this.httpOptions());
   }
 
