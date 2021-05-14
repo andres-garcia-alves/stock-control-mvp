@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MaestroLocalesComponent } from './maestro-locales.component';
 
@@ -6,7 +6,7 @@ describe('MaestroLocalesComponent', () => {
   let component: MaestroLocalesComponent;
   let fixture: ComponentFixture<MaestroLocalesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MaestroLocalesComponent ]
     })
