@@ -1,6 +1,7 @@
 # Stock Control Software
 
-A Stock Control Software (minimum valid product) for a clothing business.
+A Stock Control Software (minimum valid product) for a clothing business.  
+[LIVE DEMO HERE](https://andres-garcia-alves.github.io/stock-control-mvp/).  
 
 Current working modules/operations:
 - sales > register sale
