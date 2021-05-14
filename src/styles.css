@@ -38,6 +38,16 @@ input#is_active:focus{
     margin-right: 5px;
 }
 
+.floatRight {
+    float: right;
+    margin-left: 5px;
+}
+
 .clear {
     clear: both;
+}
+
+.badge {
+    min-width: 25px;
+    margin-right: 10px;
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "R2D2": {
+    "stock-control": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/R2D2",
+            "outputPath": "dist/stock-control",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -41,6 +41,35 @@
           },
           "configurations": {
             "production": {
+              "outputPath": "dist/stock-control",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "gh-pages": {
+              "outputPath": "docs",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -72,18 +101,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "R2D2:build"
+            "browserTarget": "stock-control:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "R2D2:build:production"
+              "browserTarget": "stock-control:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "R2D2:build"
+            "browserTarget": "stock-control:build"
           }
         },
         "test": {
@@ -120,15 +149,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "R2D2:serve"
+            "devServerTarget": "stock-control:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "R2D2:serve:production"
+              "devServerTarget": "stock-control:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "R2D2"
+  "defaultProject": "stock-control"
 }
