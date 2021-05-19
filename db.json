@@ -1,0 +1,93 @@
+{
+  "tiendas": [
+    {
+      "id": 2,
+      "direccion": "Av Saraza 1234",
+      "nombre": "Local Bs As",
+      "numero_telefono": "4444-4444",
+      "sucursula_id": 2
+    },
+    {
+      "id": 3,
+      "direccion": "Lalala 2000",
+      "nombre": "Local Rosario",
+      "numero_telefono": "5000-5000",
+      "sucursula_id": 3
+    },
+    {
+      "id": 1,
+      "direccion": "Av Pueyrredon 1233",
+      "nombre": "Local CABA",
+      "numero_telefono": "1234-1234",
+      "sucursula_id": 1},
+    {
+      "id": 5,
+      "direccion": "San Martin 2400",
+      "nombre": "Local Cordoba",
+      "numero_telefono": "4811129",
+      "sucursula_id": 0
+    },
+    {
+      "id": 8,
+      "direccion": "Belgrano 5390",
+      "nombre": "Local Ushuaia",
+      "numero_telefono": "4100-5555",
+      "sucursula_id": 0
+    }
+  ],
+  "productos": [
+    {
+      "id": 4,
+      "codigo_barra": "1111111111",
+      "nombre": "Camisa Caballero",
+      "descripcion": "Camisa Caballero",
+      "precio": 1800
+    },
+    {
+      "id": 5,
+      "codigo_barra": "11111111111",
+      "nombre": "Remera Dama",
+      "descripcion": "Remera Dama",
+      "precio": 1000
+    },
+    {
+      "id": 7,
+      "codigo_barra": "",
+      "nombre": "Campera Dama",
+      "descripcion": "",
+      "precio": 4500
+    },
+    {
+      "id": 1,
+      "codigo_barra": "123456789",
+      "nombre": "Jeans Damas",
+      "descripcion": "Jeans para Dama marca Levis",
+      "precio": 3500
+    },
+    {
+      "id": 2,
+      "codigo_barra": "123456788",
+      "nombre": "Jeans Caballero",
+      "descripcion": "Jeans para Caballero marca Levis",
+      "precio": 1200
+    },
+    {
+      "id": 3,
+      "codigo_barra": "1111111111",
+      "nombre": "vestido",
+      "descripcion": "Camisa Dama",
+      "precio": 10000},
+    {
+      "id": 9,
+      "codigo_barra": "",
+      "nombre": "Short Fútbol",
+      "descripcion": "JRR el último 10",
+      "precio": 54},
+    {
+      "id": 6,
+      "codigo_barra": "1111111111111",
+      "nombre": "Remera Caballero",
+      "descripcion": "Remera Caballero",
+      "precio": 1205}
+  ]
+}
