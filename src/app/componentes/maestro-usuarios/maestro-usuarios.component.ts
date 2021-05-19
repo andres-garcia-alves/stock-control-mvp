@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IUsuario } from 'src/app/interfaces';
 import { Usuario } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { UsuariosService } from 'src/app/services/usuarios.service';
 
 @Component({
   selector: 'app-maestro-usuarios',
@@ -20,27 +20,12 @@ export class MaestroUsuariosComponent implements OnInit {
   seleccionado: IUsuario = new Usuario();
   seleccionadoBackup: IUsuario = new Usuario();
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private usuariosService: UsuariosService) { }
 
   ngOnInit() {
     this.loading = true;
 
-    /*this.usuarios = [
-      { id: 1, username: 'Bonomini, Guido', first_name: 'Guido', last_name: 'Bonomini', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-      { id: 2, username: 'Debole, Nancy', first_name: 'Nancy', last_name: 'Debole', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-      { id: 3, username: 'Garcia Alves, Andrés', first_name: 'Andrés', last_name: 'Garcia Alves', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-      { id: 4, username: 'Salvarrey, Ignacio', first_name: 'Ignacio', last_name: 'Salvarrey', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-      { id: 5, username: 'Tanaro, Maria', first_name: 'Maria', last_name: 'Tanaro', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-      { id: 6, username: 'Turreiro Manzini, Ignacio', first_name: 'Ignacio', last_name: 'Turreiro Manzini', email: 'abc@gmail.com',
-        is_active: true, date_joined: Date.now(), last_login: Date.now() },
-    ];*/
-
-    this.accesoDatosService.getUsuarios()
+    this.usuariosService.getUsuarios()
     .subscribe(response => {
       console.log('getUsuarios()', response);
       this.usuarios = response;
@@ -74,7 +59,7 @@ export class MaestroUsuariosComponent implements OnInit {
       // this.seleccionado.last_login = new Date();
 
       console.log('CREATE', this.seleccionado);
-      this.accesoDatosService.postUsuario(this.seleccionado)
+      this.usuariosService.postUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('postUsuario()', response);
         this.seleccionado.id = response.id;
@@ -89,7 +74,7 @@ export class MaestroUsuariosComponent implements OnInit {
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-      this.accesoDatosService.putUsuario(this.seleccionado)
+      this.usuariosService.putUsuario(this.seleccionado)
       .subscribe(response => {
         console.log('putUsuario()', response);
         this.unselect();
@@ -108,7 +93,7 @@ export class MaestroUsuariosComponent implements OnInit {
     this.loading = true;
 
     console.log('DELETE', this.seleccionado);
-    this.accesoDatosService.deleteUsuario(this.seleccionado.id)
+    this.usuariosService.deleteUsuario(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteUsuario()', response);
       this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);

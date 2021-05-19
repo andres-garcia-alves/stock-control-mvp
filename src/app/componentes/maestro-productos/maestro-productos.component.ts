@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IProducto } from 'src/app/interfaces';
 import { Producto } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { ProductosService } from 'src/app/services/productos.service';
 
 @Component({
   selector: 'app-maestro-productos',
@@ -20,21 +20,12 @@ export class MaestroProductosComponent implements OnInit {
   seleccionado: IProducto = new Producto();
   seleccionadoBackup: IProducto = new Producto();
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private productosService: ProductosService) { }
 
   ngOnInit() {
     this.loading = true;
 
-    /*this.productos = [
-      { id: 1, codigo_barra: '', nombre: 'Jeans Dama', descripcion: '', precio: 3500 },
-      { id: 2, codigo_barra: '', nombre: 'Jeans Caballero', descripcion: '', precio: 3600 },
-      { id: 3, codigo_barra: '', nombre: 'Camisa Dama', descripcion: '', precio: 1700 },
-      { id: 4, codigo_barra: '', nombre: 'Camisa Caballero', descripcion: '', precio: 1800 },
-      { id: 5, codigo_barra: '', nombre: 'Remera Dama', descripcion: '', precio: 1000 },
-      { id: 6, codigo_barra: '', nombre: 'Remera Caballero', descripcion: '', precio: 1200 }
-    ];*/
-
-    this.accesoDatosService.getProductos()
+    this.productosService.getProductos()
     .subscribe(response => {
       console.log('getProductos()', response);
       this.productos = response;
@@ -66,7 +57,7 @@ export class MaestroProductosComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      this.accesoDatosService.postProducto(this.seleccionado)
+      this.productosService.postProducto(this.seleccionado)
       .subscribe(response => {
         console.log('postProducto()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.productos.map(x => x.id)) + 1;
@@ -81,7 +72,7 @@ export class MaestroProductosComponent implements OnInit {
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-      this.accesoDatosService.putProducto(this.seleccionado)
+      this.productosService.putProducto(this.seleccionado)
       .subscribe(response => {
         console.log('putProducto()', response);
         this.unselect();
@@ -99,7 +90,7 @@ export class MaestroProductosComponent implements OnInit {
     this.loading = true;
 
     console.log('DELETE', this.seleccionado);
-    this.accesoDatosService.deleteProducto(this.seleccionado.id)
+    this.productosService.deleteProducto(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProducto()', response);
       this.productos = this.productos.filter(x => x !== this.seleccionado);

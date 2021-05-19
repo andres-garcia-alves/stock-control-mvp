@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IProveedor } from 'src/app/interfaces';
 import { Proveedor } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { ProveedoresService } from 'src/app/services/proveedores.service';
 
 @Component({
   selector: 'app-maestro-proveedores',
@@ -20,21 +20,12 @@ export class MaestroProveedoresComponent implements OnInit {
   seleccionado: IProveedor = new Proveedor();
   seleccionadoBackup: IProveedor = new Proveedor();
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private proveedoresService: ProveedoresService) { }
 
   ngOnInit() {
     this.loading = true;
 
-    /*this.proveedores = [
-      { id: 1, direccion: '', nombre: 'Levis', numero_telefono: '' },
-      { id: 2, direccion: '', nombre: 'Wrangler', numero_telefono: '' },
-      { id: 3, direccion: '', nombre: '42 Street', numero_telefono: '' },
-      { id: 4, direccion: '', nombre: 'Chocolate', numero_telefono: '' },
-      { id: 5, direccion: '', nombre: 'Akiabara', numero_telefono: '' },
-      { id: 6, direccion: '', nombre: 'Solido', numero_telefono: '' }
-    ];*/
-
-    this.accesoDatosService.getProveedores()
+    this.proveedoresService.getProveedores()
     .subscribe(response => {
       console.log('getProveedores()', response);
       this.proveedores = response;
@@ -66,7 +57,7 @@ export class MaestroProveedoresComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      this.accesoDatosService.postProveedor(this.seleccionado)
+      this.proveedoresService.postProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('postProveedor()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1;
@@ -81,7 +72,7 @@ export class MaestroProveedoresComponent implements OnInit {
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-      this.accesoDatosService.putProveedor(this.seleccionado)
+      this.proveedoresService.putProveedor(this.seleccionado)
       .subscribe(response => {
         console.log('putProveedor()', response);
         this.unselect();
@@ -99,7 +90,7 @@ export class MaestroProveedoresComponent implements OnInit {
     this.loading = true;
 
     console.log('DELETE', this.seleccionado);
-    this.accesoDatosService.deleteProveedor(this.seleccionado.id)
+    this.proveedoresService.deleteProveedor(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteProveedor()', response);
       this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);

@@ -14,6 +14,7 @@ import { HomeComponent } from './componentes/home/home.component';
 import { VentasRegistrarComponent } from './componentes/ventas-registrar/ventas-registrar.component';
 import { VentasRevertirComponent } from './componentes/ventas-revertir/ventas-revertir.component';
 import { VentasReservaComponent } from './componentes/ventas-reserva/ventas-reserva.component';
+import { VentasVisualizarComponent } from './componentes/ventas-visualizar/ventas-visualizar.component';
 import { StockActualizarComponent } from './componentes/stock-actualizar/stock-actualizar.component';
 import { StockBajaComponent } from './componentes/stock-baja/stock-baja.component';
 import { StockAlertasComponent } from './componentes/stock-alertas/stock-alertas.component';
@@ -28,7 +29,6 @@ import { ReporteVendedoresPorMontoComponent } from './componentes/reporte-vended
 import { ReporteVendedoresPorUnidComponent } from './componentes/reporte-vendedores-por-unid/reporte-vendedores-por-unid.component';
 import { AboutComponent } from './componentes/about/about.component';
 import { ChangePasswordComponent } from './componentes/change-password/change-password.component';
-import { VentasVisualizarComponent } from './componentes/ventas-visualizar/ventas-visualizar.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +39,7 @@ import { VentasVisualizarComponent } from './componentes/ventas-visualizar/venta
     VentasRegistrarComponent,
     VentasRevertirComponent,
     VentasReservaComponent,
+    VentasVisualizarComponent,
     StockActualizarComponent,
     StockBajaComponent,
     StockAlertasComponent,
@@ -52,8 +53,7 @@ import { VentasVisualizarComponent } from './componentes/ventas-visualizar/venta
     ReporteVendedoresPorMontoComponent,
     ReporteVendedoresPorUnidComponent,
     AboutComponent,
-    ChangePasswordComponent,
-    VentasVisualizarComponent
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

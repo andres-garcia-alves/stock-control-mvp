@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
-import { PlainStock, Stock, BajaStock } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { PlainStock, Stock } from 'src/app/entidades';
+import { LocalesService } from 'src/app/services/locales.service';
+import { ProductosService } from 'src/app/services/productos.service';
+import { StockService } from 'src/app/services/stock.service';
 
 @Component({
   selector: 'app-stock-baja',
@@ -27,7 +29,8 @@ export class StockBajaComponent implements OnInit {
   filtroLocal = '';
   filteredStock: IPlainStock[];
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private localesService: LocalesService, private productosService: ProductosService,
+    private stockService: StockService) { }
 
   ngOnInit() {
     this.loading = true;
@@ -37,23 +40,17 @@ export class StockBajaComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    /*this.plainStock = [
-      { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
-      { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
-      { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 }
-    ];*/
-
-    this.accesoDatosService.getLocales()
+    this.localesService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
 
-      this.accesoDatosService.getProductos()
+      this.productosService.getProductos()
       .subscribe(response2 => {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStocks()
+        this.stockService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildPlainStockFromResponse(response3);
@@ -109,7 +106,7 @@ export class StockBajaComponent implements OnInit {
     const stock = new Stock(this.seleccionado);
     stock.cantidad -= this.stockForm.controls.cantidad.value;
 
-    this.accesoDatosService.putStock(stock)
+    this.stockService.putStock(stock)
     .subscribe(response => {
       console.log('putStock()', response);
       this.seleccionado.cantidad = response.cantidad;

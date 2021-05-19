@@ -3,7 +3,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
 import { PlainStock, Stock } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { LocalesService } from 'src/app/services/locales.service';
+import { ProductosService } from 'src/app/services/productos.service';
+import { StockService } from 'src/app/services/stock.service';
 
 @Component({
   selector: 'app-stock-actualizar',
@@ -28,7 +30,8 @@ export class StockActualizarComponent implements OnInit {
   filtroLocal = '';
   filteredStock: IPlainStock[];
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private localesService: LocalesService, private productosService: ProductosService,
+    private stockService: StockService) { }
 
   ngOnInit() {
 
@@ -40,44 +43,17 @@ export class StockActualizarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    /*this.locales = [
-      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
-      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
-      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
-    ];*/
-
-    /*this.productos = [
-      { id: 1, codigo_barra: '', nombre: 'Jeans Dama', descripcion: '', precio: 3500 },
-      { id: 2, codigo_barra: '', nombre: 'Jeans Caballero', descripcion: '', precio: 3600 },
-      { id: 3, codigo_barra: '', nombre: 'Camisa Dama', descripcion: '', precio: 1700 },
-      { id: 4, codigo_barra: '', nombre: 'Camisa Caballero', descripcion: '', precio: 1800 },
-      { id: 5, codigo_barra: '', nombre: 'Remera Dama', descripcion: '', precio: 1000 },
-      { id: 6, codigo_barra: '', nombre: 'Remera Caballero', descripcion: '', precio: 1200 }
-    ];*/
-
-    /*this.plainStock = [
-      { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
-      { id: 2, productoId: 1, productoNombre: 'Jeans Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 8 },
-      { id: 3, productoId: 1, productoNombre: 'Jeans Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 7 },
-      { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
-      { id: 5, productoId: 2, productoNombre: 'Jeans Caballero', localId: 2, localNombre: 'Local Bs As', cantidad: 6 },
-      { id: 6, productoId: 2, productoNombre: 'Jeans Caballero', localId: 3, localNombre: 'Local Rosario', cantidad: 6 },
-      { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 },
-      { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 },
-      { id: 9, productoId: 3, productoNombre: 'Camisa Dama', localId: 3, localNombre: 'Local Rosario', cantidad: 11 }
-    ];*/
-
-    this.accesoDatosService.getLocales()
+    this.localesService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
 
-      this.accesoDatosService.getProductos()
+      this.productosService.getProductos()
       .subscribe(response2 => {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStocks()
+        this.stockService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildPlainStockFromResponse(response3);
@@ -169,7 +145,7 @@ export class StockActualizarComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', stock);
-      this.accesoDatosService.postStock(stock)
+      this.stockService.postStock(stock)
       .subscribe(response => {
         console.log('postStock()', response);
         this.seleccionado.id = Math.max.apply(Math, this.plainStock.map(x => x.id)) + 1;
@@ -184,7 +160,7 @@ export class StockActualizarComponent implements OnInit {
     } else { // update
 
       console.log('UPDATE', stock);
-      this.accesoDatosService.putStock(stock)
+      this.stockService.putStock(stock)
       .subscribe(response => {
         console.log('putStock()', response);
         this.unselect();
@@ -202,7 +178,7 @@ export class StockActualizarComponent implements OnInit {
     this.loading = true;
 
     console.log('DELETE', this.seleccionado);
-    this.accesoDatosService.deleteStock(this.seleccionado.id)
+    this.stockService.deleteStock(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteStock()', response);
       this.plainStock = this.plainStock.filter(x => x !== this.seleccionado);

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILogin } from 'src/app/interfaces';
 import { Login } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-change-password',
@@ -12,7 +12,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private loginService: LoginService) { }
 
   debug: any;
   loading: boolean;
@@ -41,7 +41,7 @@ export class ChangePasswordComponent implements OnInit {
     login.username = (sessionStorage.getItem('username') != null) ? sessionStorage.getItem('username') : '';
     login.password = this.registroForm.value.nuevaContraseña;
 
-    this.accesoDatosService.putLogin(login)
+    this.LoginService.putLogin(login)
     .subscribe(response => {
       console.log('putLogin()', response);
       this.validaciones = 'Contraseña modificada exitosamente.';

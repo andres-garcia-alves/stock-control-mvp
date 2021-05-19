@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IVenta, IPlainVenta, IProducto, IUsuario } from 'src/app/interfaces';
-import { Venta, PlainVenta } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { PlainVenta } from 'src/app/entidades';
+import { ProductosService } from 'src/app/services/productos.service';
+import { UsuariosService } from 'src/app/services/usuarios.service';
+import { VentasService } from 'src/app/services/ventas.service';
 
 @Component({
   selector: 'app-ventas-visualizar',
@@ -30,7 +32,8 @@ export class VentasVisualizarComponent implements OnInit {
 
   ventaForm: FormGroup;
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private productosService: ProductosService, private usuariosService: UsuariosService,
+              private ventasService: VentasService) { }
 
   ngOnInit() {
 
@@ -45,17 +48,17 @@ export class VentasVisualizarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    this.accesoDatosService.getProductos()
+    this.productosService.getProductos()
     .subscribe(response => {
       console.log('getProductos()', response);
       this.productos = response;
 
-      this.accesoDatosService.getUsuarios()
+      this.usuariosService.getUsuarios()
       .subscribe(response2 => {
         console.log('getUsuarios()', response2);
         this.usuarios = response2;
 
-        this.accesoDatosService.getVentas()
+        this.ventasService.getVentas()
         .subscribe(response3 => {
           console.log('getVentas()', response3);
           this.ventas = response3;

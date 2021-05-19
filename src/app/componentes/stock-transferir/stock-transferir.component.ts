@@ -3,7 +3,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILocal, IProducto, IStock, IPlainStock } from 'src/app/interfaces';
 import { PlainStock, Stock, TransferirStock } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { LocalesService } from 'src/app/services/locales.service';
+import { ProductosService } from 'src/app/services/productos.service';
+import { StockService } from 'src/app/services/stock.service';
+import { StockTransferirService } from 'src/app/services/stock-transferir.service';
 
 @Component({
   selector: 'app-stock-transferir',
@@ -14,7 +17,7 @@ export class StockTransferirComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   locales: ILocal[] = [];
   productos: IProducto[] = [];
@@ -27,7 +30,8 @@ export class StockTransferirComponent implements OnInit {
   filtroLocal = '';
   filteredStock: IPlainStock[];
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private localesService: LocalesService, private productosService: ProductosService,
+    private stockService: StockService, private stockTransferirService: StockTransferirService) { }
 
   ngOnInit() {
     this.loading = true;
@@ -37,32 +41,17 @@ export class StockTransferirComponent implements OnInit {
       cantidad: new FormControl('')
     });
 
-    /*this.locales = [
-      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
-      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
-      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
-    ];*/
-
-    /*this.plainStock = [
-      { id: 1, productoId: 1, productoNombre: 'Jeans Dama', localId: 1, localNombre: 'Local CABA', cantidad: 15 },
-      { id: 2, productoId: 1, productoNombre: 'Jeans Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 8 },
-      { id: 4, productoId: 2, productoNombre: 'Jeans Caballero', localId: 1, localNombre: 'Local CABA', cantidad: 12 },
-      { id: 5, productoId: 2, productoNombre: 'Jeans Caballero', localId: 2, localNombre: 'Local Bs As', cantidad: 6 },
-      { id: 7, productoId: 3, productoNombre: 'Camisa Dama', localId: 1, localNombre: 'Local CABA', cantidad: 16 },
-      { id: 8, productoId: 3, productoNombre: 'Camisa Dama', localId: 2, localNombre: 'Local Bs As', cantidad: 10 }
-    ];*/
-
-    this.accesoDatosService.getLocales()
+    this.localesService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
 
-      this.accesoDatosService.getProductos()
+      this.productosService.getProductos()
       .subscribe(response2 => {
         console.log('getProductos()', response2);
         this.productos = response2;
 
-        this.accesoDatosService.getStocks()
+        this.stockService.getStocks()
         .subscribe(response3 => {
           console.log('getStock()', response3);
           this.buildPlainStockFromResponse(response3);
@@ -102,7 +91,7 @@ export class StockTransferirComponent implements OnInit {
 
   unselect() {
     this.seleccionado = new PlainStock();
-    this.validaciones = '';
+    this.messages = '';
 
     this.stockForm.controls.destino.setValue(0);
     this.stockForm.controls.cantidad.setValue('');
@@ -135,7 +124,7 @@ export class StockTransferirComponent implements OnInit {
     newStock.cantidad = this.stockForm.controls.cantidad.value;
 
     console.log('TransferirStock', transferirStock);
-    this.accesoDatosService.postTransferirStock(transferirStock)
+    this.stockTransferirService.postTransferirStock(transferirStock)
     .subscribe(response => {
       console.log('postTransferirStock()', response);
       this.seleccionado.cantidad -= transferirStock.cantidad;
@@ -146,7 +135,7 @@ export class StockTransferirComponent implements OnInit {
       this.unselect();
       this.loading = false;
     }, error => {
-      this.validaciones = error;
+      this.messages = error;
       this.loading = false;
     });
   }
@@ -177,7 +166,7 @@ export class StockTransferirComponent implements OnInit {
     console.log('aux destino', newStockDest);
 
 
-    this.accesoDatosService.putStock(newStockOri)
+    this.stockService.putStock(newStockOri)
     .subscribe(response => {
       console.log('putStock(origen)', response);
 
@@ -186,7 +175,7 @@ export class StockTransferirComponent implements OnInit {
 
       if (existeDestino) { // actualizar el stock destino
 
-        this.accesoDatosService.putStock(newStockDest)
+        this.stockService.putStock(newStockDest)
         .subscribe(response2 => {
           console.log('putStock(destino)', response2);
 
@@ -200,7 +189,7 @@ export class StockTransferirComponent implements OnInit {
 
       } else { // crear nuevo stock destino
 
-        this.accesoDatosService.postStock(newStockDest)
+        this.stockService.postStock(newStockDest)
         .subscribe(response2 => {
           console.log('postStock(destino)', response2);
 
@@ -214,36 +203,36 @@ export class StockTransferirComponent implements OnInit {
           });
       }
     }, error => {
-      this.validaciones = error;
+      this.messages = error;
       this.loading = false;
     });
   }
 
   formValidation(): boolean {
 
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.id === 0) {
-      this.validaciones += 'Falta elegir el producto a transferir.\n';
+      this.messages += 'Falta elegir el producto a transferir.\n';
     }
 
     if (this.stockForm.controls.destino.value === 0 || this.stockForm.controls.destino.value === '') {
-      this.validaciones += 'Falta elegir el local destino.\n';
+      this.messages += 'Falta elegir el local destino.\n';
     }
     if (this.seleccionado.localId ===  this.stockForm.controls.destino.value) {
-      this.validaciones += 'El origen y el destino son los mismos.\n';
+      this.messages += 'El origen y el destino son los mismos.\n';
     }
 
     if (this.stockForm.controls.cantidad.value <= 0) {
-      this.validaciones += 'Falta completar la cantidad.\n';
+      this.messages += 'Falta completar la cantidad.\n';
     }
     if (this.stockForm.controls.cantidad.value > this.seleccionado.cantidad) {
-      this.validaciones += 'La cantidad a transferir excede el stock en origen.\n';
+      this.messages += 'La cantidad a transferir excede el stock en origen.\n';
     }
     if (this.stockForm.controls.cantidad.value % 1 !== 0) {
-      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+      this.messages += 'Cantidad inválida. Ingrese un número entero.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

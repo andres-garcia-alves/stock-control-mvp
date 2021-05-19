@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILocal } from 'src/app/interfaces';
 import { Local } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { LocalesService } from 'src/app/services/locales.service';
 
 @Component({
   selector: 'app-maestro-locales',
@@ -14,24 +14,18 @@ export class MaestroLocalesComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   locales: ILocal[] = [];
   seleccionado: ILocal = new Local();
   seleccionadoBackup: ILocal = new Local();
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private localesService: LocalesService) { }
 
   ngOnInit() {
     this.loading = true;
 
-    /*this.locales = [
-      { id: 1, direccion: '', nombre: 'Local CABA', numero_telefono: '', sucursula_id: 0 },
-      { id: 2, direccion: '', nombre: 'Local Bs As', numero_telefono: '', sucursula_id: 0 },
-      { id: 3, direccion: '', nombre: 'Local Rosario', numero_telefono: '', sucursula_id: 0 }
-    ];*/
-
-    this.accesoDatosService.getLocales()
+    this.localesService.getLocales()
     .subscribe(response => {
       console.log('getLocales()', response);
       this.locales = response;
@@ -46,7 +40,7 @@ export class MaestroLocalesComponent implements OnInit {
 
   unselect() {
     this.seleccionado = new Local();
-    this.validaciones = '';
+    this.messages = '';
   }
 
   cancel() {
@@ -63,7 +57,7 @@ export class MaestroLocalesComponent implements OnInit {
     if (this.seleccionado.id === 0) { // nuevo
 
       console.log('CREATE', this.seleccionado);
-      this.accesoDatosService.postLocal(this.seleccionado)
+      this.localesService.postLocal(this.seleccionado)
       .subscribe(response => {
         console.log('postLocal()', response);
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.locales.map(x => x.id)) + 1;
@@ -71,20 +65,20 @@ export class MaestroLocalesComponent implements OnInit {
         this.unselect();
         this.loading = false;
       }, error => {
-        this.validaciones = error;
+        this.messages = error;
         this.loading = false;
       });
 
     } else { // update
 
       console.log('UPDATE', this.seleccionado);
-      this.accesoDatosService.putLocal(this.seleccionado)
+      this.localesService.putLocal(this.seleccionado)
       .subscribe(response => {
         console.log('putLocal()', response);
         this.unselect();
         this.loading = false;
       }, error => {
-        this.validaciones = error;
+        this.messages = error;
         this.loading = false;
       });
     }
@@ -96,14 +90,14 @@ export class MaestroLocalesComponent implements OnInit {
     this.loading = true;
 
     console.log('DELETE', this.seleccionado);
-    this.accesoDatosService.deleteLocal(this.seleccionado.id)
+    this.localesService.deleteLocal(this.seleccionado.id)
     .subscribe(response => {
       console.log('deleteLocal()', response);
       this.locales = this.locales.filter(x => x !== this.seleccionado);
       this.unselect();
       this.loading = false;
     }, error => {
-      this.validaciones = error;
+      this.messages = error;
       this.loading = false;
     });
 
@@ -111,16 +105,15 @@ export class MaestroLocalesComponent implements OnInit {
 
   formValidations(): boolean {
 
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.nombre === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+      this.messages += 'Falta completar el nombre.\n';
     }
-
     if (this.seleccionado.direccion === '') {
-      this.validaciones += 'Falta completar la dirección.\n';
+      this.messages += 'Falta completar la dirección.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

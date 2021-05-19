@@ -4,7 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ILogin } from 'src/app/interfaces';
 import { Login } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private accesoDatosService: AccesoDatosService) { }
+  constructor(private router: Router, private loginService: LoginService) { }
 
   debug: any;
   loading: boolean;
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
     login.password = this.registroForm.value.contraseña.toLowerCase();
     console.log('Login:', login);
 
-    this.accesoDatosService.postLogin(login)
+    this.loginService.postLogin(login)
     .subscribe(response => {
 
       console.log('postLogin()', response);

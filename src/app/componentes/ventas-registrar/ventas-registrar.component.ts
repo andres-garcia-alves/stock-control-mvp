@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { IProducto, IVenta } from 'src/app/interfaces';
+import { IProducto } from 'src/app/interfaces';
 import { Venta } from 'src/app/entidades';
-import { AccesoDatosService } from 'src/app/services/acceso-datos.service';
+import { ProductosService } from 'src/app/services/productos.service';
+import { VentasService } from 'src/app/services/ventas.service';
 
 @Component({
   selector: 'app-ventas-registrar',
@@ -20,7 +21,7 @@ export class VentasRegistrarComponent implements OnInit {
 
   ventaForm: FormGroup;
 
-  constructor(private accesoDatosService: AccesoDatosService) { }
+  constructor(private productosService: ProductosService, private ventasService: VentasService) { }
 
   ngOnInit() {
 
@@ -31,16 +32,7 @@ export class VentasRegistrarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    /*this.productos = [
-      { id: 1, codigo_barra: '', nombre: 'Jeans Dama', descripcion: '', precio: 3500 },
-      { id: 2, codigo_barra: '', nombre: 'Jeans Caballero', descripcion: '', precio: 3600 },
-      { id: 3, codigo_barra: '', nombre: 'Camisa Dama', descripcion: '', precio: 1700 },
-      { id: 4, codigo_barra: '', nombre: 'Camisa Caballero', descripcion: '', precio: 1800 },
-      { id: 5, codigo_barra: '', nombre: 'Remera Dama', descripcion: '', precio: 1000 },
-      { id: 6, codigo_barra: '', nombre: 'Remera Caballero', descripcion: '', precio: 1200 }
-    ];*/
-
-    this.accesoDatosService.getProductos()
+    this.productosService.getProductos()
     .subscribe(response => {
       console.log('getProductos()', response);
       this.productos = response;
@@ -67,7 +59,7 @@ export class VentasRegistrarComponent implements OnInit {
     venta.fecha = Date.now();
 
     console.log('CREATE', venta);
-    this.accesoDatosService.postVenta(venta)
+    this.ventasService.postVenta(venta)
     .subscribe(response => {
       console.log('postVenta()', response);
       this.unselect();
