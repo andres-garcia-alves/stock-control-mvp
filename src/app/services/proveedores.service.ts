@@ -27,26 +27,28 @@ export class ProveedoresService extends BaseService {
     this.apiProveedores = this.urlModuloStock + 'proveedores/';
   }
 
-  getProveedores() {
-    return this.http.get<IProveedor[]>(this.apiProveedores, this.buildRequestOptions());
+  async getProveedores(): Promise<IProveedor[]>  {
+    return this.http.get<IProveedor[]>(this.apiProveedores, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  getProveedor(id: number) {
-    return this.http.get<IProveedor>(this.apiProveedores + id, this.buildRequestOptions());
+  async getProveedor(id: number): Promise<IProveedor> {
+    return this.http.get<IProveedor>(this.apiProveedores + id, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  postProveedor(proveedor: IProveedor): Observable<IProveedor> {
+  async postProveedor(proveedor: IProveedor): Promise<IProveedor> {
     return this.http.post<IProveedor>(this.apiProveedores, proveedor, this.buildRequestOptions())
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putProveedor(proveedor: IProveedor) {
+  async putProveedor(proveedor: IProveedor) {
     return this.http.put<IProveedor>(this.apiProveedores + proveedor.id, proveedor, this.buildRequestOptions())
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  deleteProveedor(id: number) {
+  async deleteProveedor(id: number) {
     return this.http.delete(this.apiProveedores + id, this.buildRequestOptions())
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

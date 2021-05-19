@@ -27,26 +27,28 @@ export class ProductosService extends BaseService {
     this.apiProductos = this.urlModuloStock + 'productos/';
   }
 
-  getProductos() {
-    return this.http.get<IProducto[]>(this.apiProductos, this.buildRequestOptions());
+  async getProductos(): Promise<IProducto[]> {
+    return this.http.get<IProducto[]>(this.apiProductos, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  getProducto(id: number) {
-    return this.http.get<IProducto>(this.apiProductos + id, this.buildRequestOptions());
+  async getProducto(id: number): Promise<IProducto> {
+    return this.http.get<IProducto>(this.apiProductos + id, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  postProducto(producto: IProducto): Observable<IProducto> {
+  async postProducto(producto: IProducto): Promise<IProducto> {
     return this.http.post<IProducto>(this.apiProductos, producto, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putProducto(producto: IProducto) {
+  async putProducto(producto: IProducto) {
     return this.http.put<IProducto>(this.apiProductos + producto.id, producto, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();;
   }
 
-  deleteProducto(id: number) {
+  async deleteProducto(id: number) {
     return this.http.delete(this.apiProductos + id, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();;
   }
 }

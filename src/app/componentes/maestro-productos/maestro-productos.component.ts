@@ -14,7 +14,7 @@ export class MaestroProductosComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   productos: IProducto[] = [];
   seleccionado: IProducto = new Producto();
@@ -22,15 +22,17 @@ export class MaestroProductosComponent implements OnInit {
 
   constructor(private productosService: ProductosService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loading = true;
 
-    this.productosService.getProductos()
-    .subscribe(response => {
+    try {
+      const response = await this.productosService.getProductos()
       console.log('getProductos()', response);
+
       this.productos = response;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   select(producto: IProducto) {
@@ -40,7 +42,7 @@ export class MaestroProductosComponent implements OnInit {
 
   unselect() {
     this.seleccionado = new Producto();
-    this.validaciones = '';
+    this.messages = '';
   }
 
   cancel() {
@@ -49,79 +51,74 @@ export class MaestroProductosComponent implements OnInit {
     this.unselect();
   }
 
-  addOrEdit() {
+  async addOrEdit() {
 
     if (this.formValidations() === false) { return; }
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
-
       console.log('CREATE', this.seleccionado);
-      this.productosService.postProducto(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.productosService.postProducto(this.seleccionado)
         console.log('postProducto()', response);
+
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.productos.map(x => x.id)) + 1;
         this.productos.push(this.seleccionado);
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
 
     } else { // update
-
       console.log('UPDATE', this.seleccionado);
-      this.productosService.putProducto(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.productosService.putProducto(this.seleccionado)
         console.log('putProducto()', response);
+
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
     }
   }
 
-  delete() {
+  async delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-    this.loading = true;
 
+    this.loading = true;
     console.log('DELETE', this.seleccionado);
-    this.productosService.deleteProducto(this.seleccionado.id)
-    .subscribe(response => {
+
+    try {
+      const response = await this.productosService.deleteProducto(this.seleccionado.id)
       console.log('deleteProducto()', response);
+
       this.productos = this.productos.filter(x => x !== this.seleccionado);
       this.unselect();
-      this.loading = false;
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidations(): boolean {
 
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.nombre === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+      this.messages += 'Falta completar el nombre.\n';
     }
-
     if (this.seleccionado.descripcion === '') {
-      this.validaciones += 'Falta completar la descripción.\n';
+      this.messages += 'Falta completar la descripción.\n';
     }
-
     if (this.seleccionado.precio <= 0) {
-      this.validaciones += 'Falta completar el precio.\n';
+      this.messages += 'Falta completar el precio.\n';
     }
-
     if (this.seleccionado.precio > 999999) {
-      this.validaciones += 'Precio inválido. Máximo $999999.\n';
+      this.messages += 'Precio inválido. Máximo $999999.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

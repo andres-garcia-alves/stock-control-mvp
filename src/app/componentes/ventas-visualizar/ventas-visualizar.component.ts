@@ -16,7 +16,7 @@ export class VentasVisualizarComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   productos: IProducto[] = [];
   ventas: IVenta[] = [];
@@ -33,9 +33,9 @@ export class VentasVisualizarComponent implements OnInit {
   ventaForm: FormGroup;
 
   constructor(private productosService: ProductosService, private usuariosService: UsuariosService,
-              private ventasService: VentasService) { }
+    private ventasService: VentasService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.loading = true;
 
@@ -48,26 +48,25 @@ export class VentasVisualizarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    this.productosService.getProductos()
-    .subscribe(response => {
+    try {
+      const response = await this.productosService.getProductos()
       console.log('getProductos()', response);
+
+      const response2 = await this.usuariosService.getUsuarios()
+      console.log('getUsuarios()', response2);
+
+      const response3 = await this.ventasService.getVentas()
+      console.log('getVentas()', response3);
+
       this.productos = response;
+      this.usuarios = response2;
+      this.ventas = response3;
+      this.buildPlainVentasFromResponse(response3);
 
-      this.usuariosService.getUsuarios()
-      .subscribe(response2 => {
-        console.log('getUsuarios()', response2);
-        this.usuarios = response2;
-
-        this.ventasService.getVentas()
-        .subscribe(response3 => {
-          console.log('getVentas()', response3);
-          this.ventas = response3;
-          this.buildPlainVentasFromResponse(response3);
-          this.filter();
-          this.loading = false;
-        });
-      });
-    });
+      this.filter();
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   buildPlainVentasFromResponse(response: IVenta[]) {

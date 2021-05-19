@@ -22,15 +22,16 @@ export class MaestroLocalesComponent implements OnInit {
 
   constructor(private localesService: LocalesService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loading = true;
-
-    this.localesService.getLocales()
-    .subscribe(response => {
+    try {
+      const response = await this.localesService.getLocales()  
       console.log('getLocales()', response);
+
       this.locales = response;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   select(local: ILocal) {
@@ -49,58 +50,55 @@ export class MaestroLocalesComponent implements OnInit {
     this.unselect();
   }
 
-  addOrEdit() {
+  async addOrEdit() {
 
     if (this.formValidations() === false) { return; }
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
-
       console.log('CREATE', this.seleccionado);
-      this.localesService.postLocal(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.localesService.postLocal(this.seleccionado)
         console.log('postLocal()', response);
+
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.locales.map(x => x.id)) + 1;
         this.locales.push(this.seleccionado);
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.messages = error;
-        this.loading = false;
-      });
-
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
+      
     } else { // update
-
       console.log('UPDATE', this.seleccionado);
-      this.localesService.putLocal(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.localesService.putLocal(this.seleccionado)
         console.log('putLocal()', response);
+
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.messages = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
     }
   }
 
-  delete() {
+  async delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
+    
     this.loading = true;
-
     console.log('DELETE', this.seleccionado);
-    this.localesService.deleteLocal(this.seleccionado.id)
-    .subscribe(response => {
+
+    try {
+      const response = await this.localesService.deleteLocal(this.seleccionado.id)
       console.log('deleteLocal()', response);
+
       this.locales = this.locales.filter(x => x !== this.seleccionado);
       this.unselect();
-      this.loading = false;
-    }, error => {
-      this.messages = error;
-      this.loading = false;
-    });
-
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidations(): boolean {

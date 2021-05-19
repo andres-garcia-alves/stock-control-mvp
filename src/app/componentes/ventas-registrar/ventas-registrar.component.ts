@@ -15,7 +15,7 @@ export class VentasRegistrarComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   productos: IProducto[] = [];
 
@@ -23,7 +23,7 @@ export class VentasRegistrarComponent implements OnInit {
 
   constructor(private productosService: ProductosService, private ventasService: VentasService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.loading = true;
 
@@ -32,25 +32,26 @@ export class VentasRegistrarComponent implements OnInit {
       inputCantidad: new FormControl('')
     });
 
-    this.productosService.getProductos()
-    .subscribe(response => {
+    try {
+      const response = await this.productosService.getProductos()
       console.log('getProductos()', response);
+
       this.productos = response;
       this.unselect();
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   unselect() {
     this.ventaForm.controls.selectProductos.setValue(0);
     this.ventaForm.controls.inputCantidad.setValue('');
-    this.validaciones = '';
+    this.messages = '';
   }
 
-  add() {
+  async add() {
 
     if (this.formValidation() === false) { return; }
-    this.loading = true;
 
     const venta = new Venta();
     venta.usuario = 11;
@@ -58,37 +59,36 @@ export class VentasRegistrarComponent implements OnInit {
     venta.cantidad = this.ventaForm.controls.inputCantidad.value;
     venta.fecha = Date.now();
 
+    this.loading = true;
     console.log('CREATE', venta);
-    this.ventasService.postVenta(venta)
-    .subscribe(response => {
+
+    try {
+      const response = await this.ventasService.postVenta(venta)
       console.log('postVenta()', response);
+
       this.unselect();
-      this.validaciones = 'Venta registarda satisfactoriamente.';
-      this.loading = false;
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });
+      this.messages = 'Venta registarda satisfactoriamente.';
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidation(): boolean {
-
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.ventaForm.controls.selectProductos.value === '' ||  this.ventaForm.controls.selectProductos.value === 0) {
-      this.validaciones += 'Falta elegir el producto.\n';
+      this.messages += 'Falta elegir el producto.\n';
     }
-
     if (this.ventaForm.controls.inputCantidad.value <= 0) {
-      this.validaciones += 'Falta completar la cantidad.\n';
+      this.messages += 'Falta completar la cantidad.\n';
     }
     if (this.ventaForm.controls.inputCantidad.value > 9999) {
-      this.validaciones += 'Cantidad inválida. Máximo $9999.\n';
+      this.messages += 'Cantidad inválida. Máximo $9999.\n';
     }
     if (this.ventaForm.controls.inputCantidad.value % 1 !== 0) {
-      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+      this.messages += 'Cantidad inválida. Ingrese un número entero.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

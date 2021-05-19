@@ -24,8 +24,8 @@ export class StockBajaService extends BaseService {
     this.apiBajaStock = this.urlModuloStock + 'baja-stock/';
   }
 
-  postBajaStock(bajaStock: IBajaStock) {
+  async postBajaStock(bajaStock: IBajaStock): Promise<IBajaStock> {
     return this.http.put<IBajaStock>(this.apiBajaStock, bajaStock, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

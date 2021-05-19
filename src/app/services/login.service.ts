@@ -18,13 +18,13 @@ export class LoginService extends BaseService {
     this.apiLogin = this.urlModuloLogin;
   }
 
-  postLogin(login: ILogin) {
+  async postLogin(login: ILogin) {
     return this.http.post<any>(this.apiLogin, login)
-    .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putLogin(login: ILogin) {
+  async putLogin(login: ILogin) {
     return this.http.put<any>(this.apiLogin, login, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

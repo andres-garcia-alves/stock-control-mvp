@@ -24,28 +24,28 @@ export class LocalesService extends BaseService {
     this.apiLocales = this.urlModuloStock + 'tiendas/';
   }
 
-  /*async*/ getLocales(): Observable<ILocal[]> { // Promise<ILocal[]> {
+  async getLocales(): Promise<ILocal[]> {
     return this.http.get<ILocal[]>(this.apiLocales, this.buildRequestOptions())
-      .pipe<ILocal[]>(catchError(this.errorHandler));//.toPromise();
+      .pipe<ILocal[]>(catchError(this.errorHandler)).toPromise();
   }
 
-  /*async*/ getLocal(id: number): Observable<ILocal> {
+  async getLocal(id: number): Promise<ILocal> {
     return this.http.get<ILocal>(this.apiLocales + id, this.buildRequestOptions())
-      .pipe<ILocal>(catchError(this.errorHandler));//.toPromise();
+      .pipe<ILocal>(catchError(this.errorHandler)).toPromise();
   }
 
-  /*async*/ postLocal(local: ILocal): Observable<ILocal> {
+  async postLocal(local: ILocal): Promise<ILocal> {
     return this.http.post<ILocal>(this.apiLocales, local, this.buildRequestOptions())
-      .pipe<ILocal>(catchError(this.errorHandler));//.toPromise();
+      .pipe<ILocal>(catchError(this.errorHandler)).toPromise();
   }
 
-  /*async*/ putLocal(local: ILocal) {
+  async putLocal(local: ILocal) {
     return this.http.put<ILocal>(this.apiLocales + local.id, local, this.buildRequestOptions())
-      .pipe<ILocal>(catchError(this.errorHandler));
+      .pipe<ILocal>(catchError(this.errorHandler)).toPromise();
   }
 
-  /*async*/ deleteLocal(id: number) {
+  async deleteLocal(id: number) {
     return this.http.delete(this.apiLocales + id, this.buildRequestOptions())
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

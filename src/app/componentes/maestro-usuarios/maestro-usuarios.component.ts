@@ -14,7 +14,7 @@ export class MaestroUsuariosComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   usuarios: IUsuario[];
   seleccionado: IUsuario = new Usuario();
@@ -22,15 +22,17 @@ export class MaestroUsuariosComponent implements OnInit {
 
   constructor(private usuariosService: UsuariosService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loading = true;
-
-    this.usuariosService.getUsuarios()
-    .subscribe(response => {
+    
+    try {
+      const response = await this.usuariosService.getUsuarios()
       console.log('getUsuarios()', response);
+
       this.usuarios = response;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   select(usuario: IUsuario) {
@@ -40,7 +42,7 @@ export class MaestroUsuariosComponent implements OnInit {
 
   unselect() {
     this.seleccionado = new Usuario();
-    this.validaciones = '';
+    this.messages = '';
   }
 
   cancel() {
@@ -49,98 +51,89 @@ export class MaestroUsuariosComponent implements OnInit {
     this.unselect();
   }
 
-  addOrEdit() {
+  async addOrEdit() {
 
     if (this.formValidations() === false) { return; }
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
+      console.log('CREATE', this.seleccionado);
       // this.seleccionado.date_joined = new Date();
       // this.seleccionado.last_login = new Date();
 
-      console.log('CREATE', this.seleccionado);
-      this.usuariosService.postUsuario(this.seleccionado)
-      .subscribe(response => {
+      try {
+        const response = await this.usuariosService.postUsuario(this.seleccionado)
         console.log('postUsuario()', response);
+  
         this.seleccionado.id = response.id;
         this.usuarios.push(this.seleccionado);
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
 
     } else { // update
-
       console.log('UPDATE', this.seleccionado);
-      this.usuariosService.putUsuario(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.usuariosService.putUsuario(this.seleccionado)
         console.log('putUsuario()', response);
+  
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
     }
   }
 
-  delete() {
+  async delete() {
 
     if (this.deleteValidations() === false) { return; }
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
+    
     this.loading = true;
-
     console.log('DELETE', this.seleccionado);
-    this.usuariosService.deleteUsuario(this.seleccionado.id)
-    .subscribe(response => {
+
+    try {
+      const response = await this.usuariosService.deleteUsuario(this.seleccionado.id)
       console.log('deleteUsuario()', response);
-      this.usuarios = this.usuarios.filter(x => x !== this.seleccionado);
+
       this.unselect();
-      this.loading = false;
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidations(): boolean {
-
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.id === 11 || this.seleccionado.username.toLowerCase() === 'admin') {
-      this.validaciones += 'El usuario ADMIN es de solo lectura.\n';
+      this.messages += 'El usuario ADMIN es de solo lectura.\n';
     }
-
     if (this.seleccionado.username === '') {
-      this.validaciones += 'Falta completar el nombre de usuario.\n';
+      this.messages += 'Falta completar el nombre de usuario.\n';
     }
-
     if (this.seleccionado.first_name === '') {
-      this.validaciones += 'Falta completar el nombre de pila.\n';
+      this.messages += 'Falta completar el nombre de pila.\n';
     }
-
     if (this.seleccionado.last_name === '') {
-      this.validaciones += 'Falta completar el apellido.\n';
+      this.messages += 'Falta completar el apellido.\n';
     }
-
     const emailRegex = /^[-_\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
     if (emailRegex.test(this.seleccionado.email) === false) {
-      this.validaciones += 'El email es inválido.\n';
+      this.messages += 'El email es inválido.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 
   deleteValidations(): boolean {
-
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.username.toLowerCase() === 'admin') {
-      this.validaciones += 'Ni se te ocurra eliminar el ADMIN que te quedás OUT !!\nLoko, que gente jodida ;-)\n';
+      this.messages += 'Ni se te ocurra eliminar el ADMIN que te quedás OUT !!\nLoko, que gente jodida ;-)\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

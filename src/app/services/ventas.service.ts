@@ -18,26 +18,28 @@ export class VentasService extends BaseService {
     this.apiVentas = this.urlModuloStock + 'ventas/';
   }
 
-  getVentas() {
-    return this.http.get<IVenta[]>(this.apiVentas, this.buildRequestOptions());
+  async getVentas(): Promise<IVenta[]> {
+    return this.http.get<IVenta[]>(this.apiVentas, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  getVenta(id: number) {
-    return this.http.get<IVenta[]>(this.apiVentas + id, this.buildRequestOptions());
+  async getVenta(id: number): Promise<IVenta> {
+    return this.http.get<IVenta>(this.apiVentas + id, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  postVenta(venta: IVenta): Observable<IVenta> {
+  async postVenta(venta: IVenta): Promise<IVenta> {
     return this.http.post<IVenta>(this.apiVentas, venta, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putVenta(id: number, venta: IVenta) {
+  async putVenta(id: number, venta: IVenta) {
     return this.http.put<IVenta>(this.apiVentas + id, venta, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  deleteVenta(id: number) {
+  async deleteVenta(id: number) {
     return this.http.delete(this.apiVentas + id, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

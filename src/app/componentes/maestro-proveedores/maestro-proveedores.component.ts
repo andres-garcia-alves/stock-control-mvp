@@ -14,7 +14,7 @@ export class MaestroProveedoresComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   proveedores: IProveedor[] = [];
   seleccionado: IProveedor = new Proveedor();
@@ -22,15 +22,17 @@ export class MaestroProveedoresComponent implements OnInit {
 
   constructor(private proveedoresService: ProveedoresService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loading = true;
 
-    this.proveedoresService.getProveedores()
-    .subscribe(response => {
+    try {
+      const response = await this.proveedoresService.getProveedores()
       console.log('getProveedores()', response);
+
       this.proveedores = response;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   select(proveedor: IProveedor) {
@@ -40,7 +42,7 @@ export class MaestroProveedoresComponent implements OnInit {
 
   unselect() {
     this.seleccionado = new Proveedor();
-    this.validaciones = '';
+    this.messages = '';
   }
 
   cancel() {
@@ -49,71 +51,67 @@ export class MaestroProveedoresComponent implements OnInit {
     this.unselect();
   }
 
-  addOrEdit() {
+  async addOrEdit() {
 
     if (this.formValidations() === false) { return; }
     this.loading = true;
 
     if (this.seleccionado.id === 0) { // nuevo
-
       console.log('CREATE', this.seleccionado);
-      this.proveedoresService.postProveedor(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.proveedoresService.postProveedor(this.seleccionado)
         console.log('postProveedor()', response);
+  
         this.seleccionado.id = response.id; // Math.max.apply(Math, this.proveedores.map(x => x.id)) + 1;
         this.proveedores.push(this.seleccionado);
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
 
     } else { // update
-
       console.log('UPDATE', this.seleccionado);
-      this.proveedoresService.putProveedor(this.seleccionado)
-      .subscribe(response => {
+
+      try {
+        const response = await this.proveedoresService.putProveedor(this.seleccionado)
         console.log('putProveedor()', response);
+  
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
     }
   }
 
-  delete() {
+  async delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-    this.loading = true;
 
+    this.loading = true;
     console.log('DELETE', this.seleccionado);
-    this.proveedoresService.deleteProveedor(this.seleccionado.id)
-    .subscribe(response => {
+
+    try {
+      const response = await this.proveedoresService.deleteProveedor(this.seleccionado.id)
       console.log('deleteProveedor()', response);
+
       this.proveedores = this.proveedores.filter(x => x !== this.seleccionado);
       this.unselect();
-      this.loading = false;
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidations(): boolean {
-
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.nombre === '') {
-      this.validaciones += 'Falta completar el nombre.\n';
+      this.messages += 'Falta completar el nombre.\n';
     }
-
     if (this.seleccionado.direccion === '') {
-      this.validaciones += 'Falta completar la dirección.\n';
+      this.messages += 'Falta completar la dirección.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }

@@ -30,22 +30,23 @@ export class StockService extends BaseService {
     this.apiStock = this.urlModuloStock + 'stock/';
   }
 
-  getStocks() {
-    return this.http.get<IStock[]>(this.apiStock, this.buildRequestOptions());
+  async getStocks(): Promise<IStock[]> {
+    return this.http.get<IStock[]>(this.apiStock, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  postStock(stock: IStock): Observable<IStock> {
+  async postStock(stock: IStock): Promise<IStock> {
     return this.http.post<IStock>(this.apiStock, stock, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putStock(stock: IStock) {
+  async putStock(stock: IStock) {
     return this.http.put<IStock>(this.apiStock + stock.id, stock, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  deleteStock(id: number) {
+  async deleteStock(id: number) {
     return this.http.delete(this.apiStock + id, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

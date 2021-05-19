@@ -18,8 +18,8 @@ export class StockTransferirService extends BaseService {
     this.apiTransferirStock = this.urlModuloStock + 'transferir-stock/';
   }
 
-  postTransferirStock(transferirStock: ITransferirStock) {
+  async postTransferirStock(transferirStock: ITransferirStock) {
     return this.http.put<ITransferirStock>(this.apiTransferirStock, transferirStock, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

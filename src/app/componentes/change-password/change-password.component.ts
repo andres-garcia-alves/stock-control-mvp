@@ -16,7 +16,7 @@ export class ChangePasswordComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   registroForm = new FormGroup({
     nuevaContraseña: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
@@ -24,30 +24,30 @@ export class ChangePasswordComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.validaciones = 'Mínimo 4 caracteres.';
+    this.messages = 'Mínimo 4 caracteres.';
   }
 
-  onSubmit() {
+  async onSubmit() {
 
     if (this.registroForm.value.nuevaContraseña !== this.registroForm.value.repetirContraseña) {
-      this.validaciones = 'Las contraseñas no coinciden.';
+      this.messages = 'Las contraseñas no coinciden.';
       return;
     }
 
-    this.validaciones = 'Pendiente de desarrollo (fuera del MVP).';
+    this.messages = 'Pendiente de desarrollo (fuera del MVP).';
     return;
 
-    /*const login = new Login();
+    /*
+    const login = new Login();
     login.username = (sessionStorage.getItem('username') != null) ? sessionStorage.getItem('username') : '';
     login.password = this.registroForm.value.nuevaContraseña;
 
-    this.LoginService.putLogin(login)
-    .subscribe(response => {
-      console.log('putLogin()', response);
-      this.validaciones = 'Contraseña modificada exitosamente.';
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });*/
+    try {
+      await this.loginService.putLogin(login)
+      this.messages = 'Contraseña modificada exitosamente.';
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
+    */
   }
 }

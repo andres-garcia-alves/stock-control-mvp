@@ -33,26 +33,28 @@ export class UsuariosService extends BaseService {
     this.apiUsuarios = this.urlModuloUsers + 'users/';
   }
 
-  getUsuarios() {
-    return this.http.get<IUsuario[]>(this.apiUsuarios, this.buildRequestOptions());
+  async getUsuarios(): Promise<IUsuario[]> {
+    return this.http.get<IUsuario[]>(this.apiUsuarios, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  getUsuario(id: number) {
-    return this.http.get<IUsuario>(this.apiUsuarios + id, this.buildRequestOptions());
+  async getUsuario(id: number): Promise<IUsuario> {
+    return this.http.get<IUsuario>(this.apiUsuarios + id, this.buildRequestOptions())
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  postUsuario(usuario: IUsuario): Observable<IUsuario> {
+  async postUsuario(usuario: IUsuario): Promise<IUsuario> {
     return this.http.post<IUsuario>(this.apiUsuarios, usuario, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  putUsuario(usuario: IUsuario) {
+  async putUsuario(usuario: IUsuario) {
     return this.http.put<IUsuario>(this.apiUsuarios + usuario.id, usuario, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 
-  deleteUsuario(id: number) {
+  async deleteUsuario(id: number) {
     return this.http.delete(this.apiUsuarios + id, this.buildRequestOptions())
-      .pipe( catchError(this.errorHandler) );
+      .pipe(catchError(this.errorHandler)).toPromise();
   }
 }

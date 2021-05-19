@@ -16,7 +16,7 @@ export class StockActualizarComponent implements OnInit {
 
   debug: any;
   loading: boolean;
-  validaciones: string;
+  messages: string;
 
   locales: ILocal[] = [];
   productos: IProducto[] = [];
@@ -33,35 +33,32 @@ export class StockActualizarComponent implements OnInit {
   constructor(private localesService: LocalesService, private productosService: ProductosService,
     private stockService: StockService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.loading = true;
 
-    this.stockForm = new FormGroup({
+    this.stockForm = new FormGroup( {
       selectProductos: new FormControl(''),
       selectLocales: new FormControl(''),
       inputCantidad: new FormControl('')
     });
 
-    this.localesService.getLocales()
-    .subscribe(response => {
+    try {
+      const response = await this.localesService.getLocales();
       console.log('getLocales()', response);
+
+      const response2 = await this.productosService.getProductos();
+      console.log('getProductos()', response2);
+
+      const response3 = await this.stockService.getStocks();
+      console.log('getStock()', response3);
+
       this.locales = response;
-
-      this.productosService.getProductos()
-      .subscribe(response2 => {
-        console.log('getProductos()', response2);
-        this.productos = response2;
-
-        this.stockService.getStocks()
-        .subscribe(response3 => {
-          console.log('getStock()', response3);
-          this.buildPlainStockFromResponse(response3);
-          this.loading = false;
-          this.filter();
-        });
-      });
-    });
+      this.productos = response2;
+      this.buildPlainStockFromResponse(response3);
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; this.filter(); }
   }
 
   buildPlainStockFromResponse(response: IStock[]) {
@@ -95,7 +92,7 @@ export class StockActualizarComponent implements OnInit {
     this.filter();
 
     this.seleccionado = new PlainStock();
-    this.validaciones = '';
+    this.messages = '';
 
     this.stockForm.controls.selectProductos.setValue('');
     this.stockForm.controls.selectProductos.enable();
@@ -135,7 +132,7 @@ export class StockActualizarComponent implements OnInit {
     this.seleccionado.cantidad = this.stockForm.controls.inputCantidad.value;
   }
 
-  addOrEdit() {
+  async addOrEdit() {
 
     if (this.formValidation() === false) { return; }
     this.loading = true;
@@ -143,76 +140,71 @@ export class StockActualizarComponent implements OnInit {
     const stock = new Stock(this.seleccionado);
 
     if (this.seleccionado.id === 0) { // nuevo
-
       console.log('CREATE', stock);
-      this.stockService.postStock(stock)
-      .subscribe(response => {
+
+      try {
+        const response = await this.stockService.postStock(stock)
         console.log('postStock()', response);
+
         this.seleccionado.id = Math.max.apply(Math, this.plainStock.map(x => x.id)) + 1;
         this.plainStock.push(this.seleccionado);
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
 
     } else { // update
-
       console.log('UPDATE', stock);
-      this.stockService.putStock(stock)
-      .subscribe(response => {
+
+      try {
+        const response = await this.stockService.putStock(stock)
         console.log('putStock()', response);
+
         this.unselect();
-        this.loading = false;
-      }, error => {
-        this.validaciones = error;
-        this.loading = false;
-      });
+      }
+      catch (error) { this.messages = error; }
+      finally { this.loading = false; }
     }
   }
 
-  delete() {
+  async delete() {
 
     if (confirm('Está seguro que desea borrarlo?') === false) { return; }
-    this.loading = true;
 
+    this.loading = true;
     console.log('DELETE', this.seleccionado);
-    this.stockService.deleteStock(this.seleccionado.id)
-    .subscribe(response => {
+
+    try {
+      const response = await this.stockService.deleteStock(this.seleccionado.id)
       console.log('deleteStock()', response);
+
       this.plainStock = this.plainStock.filter(x => x !== this.seleccionado);
       this.filter();
       this.unselect();
-      this.loading = false;
-    }, error => {
-      this.validaciones = error;
-      this.loading = false;
-    });
+    }
+    catch (error) { this.messages = error; }
+    finally { this.loading = false; }
   }
 
   formValidation(): boolean {
-
-    this.validaciones = '';
+    this.messages = '';
 
     if (this.seleccionado.productoId === 0 ||  this.seleccionado.productoNombre === '') {
-      this.validaciones += 'Falta elegir el producto.\n';
+      this.messages += 'Falta elegir el producto.\n';
     }
-
     if (this.seleccionado.localId === 0 || this.seleccionado.localNombre === '') {
-      this.validaciones += 'Falta elegir el local.\n';
+      this.messages += 'Falta elegir el local.\n';
     }
-
     if (this.seleccionado.cantidad <= 0) {
-      this.validaciones += 'Falta completar la cantidad.\n';
+      this.messages += 'Falta completar la cantidad.\n';
     }
     if (this.seleccionado.cantidad > 9999) {
-      this.validaciones += 'Cantidad inválida. Máximo $9999.\n';
+      this.messages += 'Cantidad inválida. Máximo $9999.\n';
     }
     if (this.seleccionado.cantidad % 1 !== 0) {
-      this.validaciones += 'Cantidad inválida. Ingrese un número entero.\n';
+      this.messages += 'Cantidad inválida. Ingrese un número entero.\n';
     }
 
-    return (this.validaciones === '') ? true : false;
+    return (this.messages === '') ? true : false;
   }
 }
