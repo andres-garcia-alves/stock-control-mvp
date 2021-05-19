@@ -13,10 +13,10 @@ export class AccesoDatosService {
 
   // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/r2d2/'; // fake db
   // urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo server
+  urlModuloLogin = 'https://ingenieria2stock.herokuapp.com/api-token-auth/';
   urlModuloStock = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
   urlModuloUsers = 'https://ingenieria2stock.herokuapp.com/users/api/v1/';
-  urlModuloLogin = 'https://ingenieria2stock.herokuapp.com/api-token-auth/';
-
+  
   apiLogin = this.urlModuloLogin;
   apiUsuarios = this.urlModuloUsers + 'users/';
 
