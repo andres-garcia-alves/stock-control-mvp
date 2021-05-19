@@ -11,8 +11,12 @@ import { IStock, IVenta, IBajaStock, ITransferirStock } from '../interfaces/inde
 })
 export class AccesoDatosService {
 
-  // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/r2d2/'; // fake db
-  // urlBase = 'https://envxilr8qlgd.x.pipedream.net/'; // echo server
+  // echo server
+  // urlBase = 'https://envxilr8qlgd.x.pipedream.net/';
+
+  // fake db
+  // urlBase = 'https://my-json-server.typicode.com/andres-garcia-alves/stock-control-mvp/';
+  
   urlModuloLogin = 'https://ingenieria2stock.herokuapp.com/api-token-auth/';
   urlModuloStock = 'https://ingenieria2stock.herokuapp.com/stock/api/v1/';
   urlModuloUsers = 'https://ingenieria2stock.herokuapp.com/users/api/v1/';

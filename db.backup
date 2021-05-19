@@ -144,56 +144,80 @@
       "username": "Guido2019",
       "first_name": "Guido",
       "last_name": "Bonomini",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T16:51:29.411218Z",
+      "last_login": null
     },
     {
       "id": 5,
       "username": "Nancy2019",
       "first_name": "Nancy",
       "last_name": "Debole",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T17:18:29.634242Z",
+      "last_login": null
     },
     {
       "id": 8,
       "username": "Maria2019",
       "first_name": "Maria",
       "last_name": "Tanaro",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T18:29:47.485000Z",
+      "last_login": "2019-10-29T18:29:47.485000Z"
     },
     {
       "id": 7,
       "username": "IgnacioS2019",
       "first_name": "Ignacio",
       "last_name": "Salvarrey",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T18:19:36.526668Z",
+      "last_login": null
     },
     {
       "id": 10,
       "username": "IgnacioT2019",
       "first_name": "Ignacio",
       "last_name": "Turreiro Manzini",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T19:01:13.448930Z",
+      "last_login": null
     },
     {
       "id": 6,
       "username": "Andres2019",
       "first_name": "Andrés",
       "last_name": "Garcia Alves",
-      "email": "abc@gmail.com"
+      "email": "abc@gmail.com",
+      "is_active": true,
+      "date_joined": "2019-10-29T17:23:19.163829Z",
+      "last_login": null
     },
     {
       "id": 1,
       "username": "HolaMundo2019",
       "first_name": "Mundo",
       "last_name": "Hola",
-      "email": "hola@mundo.com"
+      "email": "hola@mundo.com",
+      "is_active": true,
+      "date_joined": "2019-10-23T16:29:03.088984Z",
+      "last_login": "2019-10-29T09:12:07.055872Z"
     },
     {
       "id": 11,
       "username": "admin",
       "first_name": "admin",
       "last_name": "admin",
-      "email": "admin@admin.com"
+      "email": "admin@admin.com",
+      "is_active": true,
+      "date_joined": "2019-10-31T00:10:05.396941Z",
+      "last_login": "2019-10-31T04:04:43.417942Z"
     }
   ],
   "stock": [
