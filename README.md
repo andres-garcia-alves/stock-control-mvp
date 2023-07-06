@@ -19,14 +19,16 @@ Current working modules/operations:
 
 ### Screenshots
 
-| sales > view sales                | master > branches master          |
-|-----------------------------------|-----------------------------------|
+| sales > view sales                    | master > branches master              |
+|---------------------------------------|---------------------------------------|
 | ![](src/assets/img/screenshot-01.png) | ![](src/assets/img/screenshot-02.png) |
 
 &nbsp;
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.8.  
 Updated up to Angular version 12.0.0.  
+
+&nbsp;
 
 ### Development server
 
@@ -56,7 +58,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 &nbsp;
 
+### Version History
+
+v1.0 (2021.05.26) - Initial release.  
+
+&nbsp;
+
 This is the first public release of this project.  
 Developed for subject 'Ingenieria de Software II', at CAECE University, Buenos Aires, Argentina.  
 
+This source code is licensed under MIT licence.  
 Please send me your feedback about this project: andres.garcia.alves@gmail.com
